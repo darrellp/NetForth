@@ -77,6 +77,7 @@ namespace NetForth
                 {"if", new Primitive(iffn, true) },
                 {"do", new Primitive(dofn, true) },
 				{"?do", new Primitive(questDofn, true) },
+                {"begin", new Primitive(begin, true) },
 				{"i", new Primitive(i) },
 				{"j", new Primitive(j) },
 				{"leave", new Primitive(leave) },
@@ -111,6 +112,11 @@ namespace NetForth
 		{
 			Interpreter.InterpreterStack.Push(new DoWord(wlb, true));
 		}
+
+        private static void begin(WordListBuilder wlb)
+        {
+            Interpreter.InterpreterStack.Push(new BeginWord(wlb));
+        }
 
 		private static void i()
 		{

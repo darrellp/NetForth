@@ -26,6 +26,12 @@ namespace NetForthTests
 			TestScript(": iftest if 100 else 200 then ; 0 iftest", 100);
 		}
 
+        [TestMethod]
+        public void TestBegin()
+        {
+            TestScript(": dotest 0 begin 1 + dup 5 > if exit then again ; dotest", 6);
+        }
+
 		[TestMethod]
 		public void TestDo()
 		{
@@ -58,6 +64,7 @@ namespace NetForthTests
             // Exit should leave only the current dfn.  The caller should still put 500 on the stack
             TestScript(": dotest 0 10 1 do i + i 5 > if exit then 100 + loop drop 1000 ; : dodotest dotest drop 500 ; dodotest", 500);
         }
+
 		[TestMethod]
 		public void TestIncLoop()
 		{
