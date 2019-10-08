@@ -15,7 +15,7 @@
 
             if (word == ";")
             {
-                Vocabulary.CurrentVocabulary.AddDefinition(_currentDefWord, _wlb.Realize());
+                Vocabulary.CurrentVocabulary.AddDefinition(_currentDefWord, _wlb.Realize(true));
                 Interpreter.InterpreterStack.Pop();
                 return;
             }

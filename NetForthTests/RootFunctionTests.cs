@@ -47,6 +47,13 @@ namespace NetForthTests
 			TestScript(": dotest 0 10 1 do i + i 5 > ?leave 100 + loop ; dotest", 521);
 		}
 
+
+        [TestMethod]
+        public void TestExit()
+        {
+            TestScript(": dotest 0 10 1 do i + i 5 > if leave then 100 + loop drop 1000 ; dotest", 1000);
+            TestScript(": dotest 0 10 1 do i + i 5 > if exit then 100 + loop drop 1000 ; dotest", 521);
+        }
 		[TestMethod]
 		public void TestIncLoop()
 		{

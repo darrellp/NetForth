@@ -6,18 +6,21 @@ namespace NetForth
     internal class WordList : Evaluable
     {
         private readonly List<Evaluable> _subwords;
+        // Is this for a defined word or created on the fly by flow of control constructs?
+        private readonly bool _isDefined;
 
         private bool _leave;
 
-        public WordList(List<Evaluable> subwords = null)
+        public WordList(List<Evaluable> subwords = null, bool isDefined = false)
         {
             _subwords = subwords ?? new List<Evaluable>();
+            _isDefined = isDefined;
         }
 
         internal override void Leave(ExitType exitType)
         {
             _leave = true;
-            if (exitType == ExitType.Leave)
+            if (!_isDefined || exitType == ExitType.Leave)
             {
                 _parent.Leave(exitType);
             }
