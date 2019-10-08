@@ -14,7 +14,7 @@
                 // TODO: get more robust error handling
                 throw new NfException($"Couldn't locate word {word}");
             }
-            evaluable.Eval(null);
+            evaluable.Eval();
         }
 
         internal static Evaluable ParseWord(string word)

@@ -8,7 +8,7 @@ namespace NetForth
     {
         internal static readonly Stack<WordInterpreter> InterpreterStack = new Stack<WordInterpreter>();
 
-        private TextReader _sr;
+        private readonly TextReader _sr;
 
 	    public Interpreter(TextReader sr)
         {

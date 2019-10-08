@@ -9,7 +9,7 @@
             _value = value;
         }
 
-        internal override void InnerEval(WordListBuilder wlb = null)
+        protected override void InnerEval(WordListBuilder wlb)
         {
             DataStack.Stack.Push(_value);
         }

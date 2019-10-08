@@ -30,7 +30,7 @@ namespace NetForth.WordInterpreters
                 }
             }
 
-            internal override void InnerEval(WordListBuilder _ = null)
+            protected override void InnerEval(WordListBuilder _)
             {
 				_iLoop = LoopIndices.Count;
 

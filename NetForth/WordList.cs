@@ -28,7 +28,7 @@ namespace NetForth
 
         public WordList(params Evaluable[] subwords) : this(subwords.ToList()) { }
 
-        internal override void InnerEval(WordListBuilder _)
+        protected override void InnerEval(WordListBuilder _)
         {
             try
             {

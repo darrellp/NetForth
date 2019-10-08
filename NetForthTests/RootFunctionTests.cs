@@ -51,8 +51,12 @@ namespace NetForthTests
         [TestMethod]
         public void TestExit()
         {
-            TestScript(": dotest 0 10 1 do i + i 5 > if leave then 100 + loop drop 1000 ; dotest", 1000);
+            // Exit should leave entire definition which should leave 521 on the stack
             TestScript(": dotest 0 10 1 do i + i 5 > if exit then 100 + loop drop 1000 ; dotest", 521);
+            // Leave should leave just the do loop and evealuate the rest of the definition putting 1000 on the stack
+            TestScript(": dotest 0 10 1 do i + i 5 > if leave then 100 + loop drop 1000 ; dotest", 1000);
+            // Exit should leave only the current dfn.  The caller should still put 500 on the stack
+            TestScript(": dotest 0 10 1 do i + i 5 > if exit then 100 + loop drop 1000 ; : dodotest dotest drop 500 ; dodotest", 500);
         }
 		[TestMethod]
 		public void TestIncLoop()

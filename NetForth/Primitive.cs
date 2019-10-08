@@ -19,7 +19,7 @@ namespace NetForth
             IsImmediate = isImmediate;
         }
 
-        internal override void InnerEval(WordListBuilder wlb = null)
+        protected override void InnerEval(WordListBuilder wlb)
         {
             if (_action != null)
             {

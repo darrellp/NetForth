@@ -15,7 +15,7 @@ namespace NetForth.WordInterpreters
                 _wlElse = wlElse;
             }
 
-            internal override void InnerEval(WordListBuilder wlb = null)
+            protected override void InnerEval(WordListBuilder wlb)
             {
                 if (Stack.Pop() != 0)
                 {
