@@ -6,11 +6,13 @@
 		{
 			private readonly WordList _wlBegin;
 			private bool _leave;
+            private bool _isUntil;
 
-			internal BeginPrim(WordList wlBegin)
+			internal BeginPrim(WordList wlBegin, bool isUntil = false)
 			{
 				_wlBegin = wlBegin;
-			}
+                _isUntil = isUntil;
+            }
 
 			internal override void Leave(ExitType exitType)
 			{
@@ -32,6 +34,14 @@
 						{
 							return;
 						}
+
+                        if (_isUntil)
+                        {
+                            if (DataStack.Stack.Pop() != 0)
+                            {
+                                return;
+                            }
+                        }
 					}
 				}
 				finally
@@ -57,6 +67,13 @@
 				Interpreter.InterpreterStack.Pop();
 				return;
 			}
+
+            if (word == "until")
+            {
+                _wlbParent.Add(new BeginPrim(_wlbBegin.Realize(), true));
+                Interpreter.InterpreterStack.Pop();
+                return;
+            }
 
 			var evaluable = EvalWord.ParseWord(word);
 			if (evaluable == null)

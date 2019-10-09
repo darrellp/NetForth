@@ -30,6 +30,7 @@ namespace NetForthTests
         public void TestBegin()
         {
             TestScript(": dotest 0 begin 1 + dup 5 > if exit then again ; dotest", 6);
+            TestScript(": dotest 0 begin 1 + dup 5 > until ; dotest", 6);
         }
 
 		[TestMethod]
