@@ -84,6 +84,7 @@ namespace NetForth
 				{"?leave", new Primitive(condLeave, "?leave") },
                 {"exit", new Primitive(exit, "exit") },
 				{"c\"", new Primitive(countedString, true) },
+                {"[char]", new Primitive(fromChar, true) },
 			};
 
             Vocabulary.AddVocabulary(new Vocabulary(rootPrimitives));
@@ -95,6 +96,13 @@ namespace NetForth
 		{
 			Interpreter.InterpreterStack.Push(new FString(wlb));
 		}
+
+        private static void fromChar(WordListBuilder wlb)
+        {
+            Interpreter.InterpreterStack.Push(new CharWord(wlb));
+        }
+
+
 		#endregion
 
 		#region Flow of Control

@@ -84,6 +84,12 @@ namespace NetForthTests
             TestScript(": dotest C\" Hello World!\" ; dotest 1 cells 11 chars + + c@", 33);
 		}
 
+        [TestMethod]
+        public void TestCharWord()
+        {
+            TestScript(": dotest [char] a ; dotest", (int)'a');
+        }
+
 		private void TestScript(string script, int expected)
         {
             using (var nf = new Session())
