@@ -20,7 +20,7 @@ namespace NetForth
             return ret;
         }
 
-        internal static int Create()
+        internal static int Here()
         {
             return Allocate(0);
         }

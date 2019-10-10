@@ -109,12 +109,27 @@ namespace NetForthTests
             {
                 var intrp = new Interpreter("5 ,");
                 intrp.InterpretAll();
-                var val = Memory.FetchInt((int) Memory.Create() - sizeof(int));
+                var val = Memory.FetchInt((int) Memory.Here() - sizeof(int));
                 val.Should().Be(5);
                 intrp = new Interpreter("char P c,");
                 intrp.InterpretAll();
-                var valc = Memory.FetchChar((int)Memory.Create() - sizeof(char));
+                var valc = Memory.FetchChar((int)Memory.Here() - sizeof(char));
                 valc.Should().Be('P');
+            }
+        }
+
+        [TestMethod]
+        public void TestAllocation()
+        {
+            using (var unused = new FSession())
+            {
+                var intrp = new Interpreter("here");
+                intrp.InterpretAll();
+                Stack[0].Should().Be((int) Memory.Here());
+                intrp = new Interpreter("10 allot");
+                var before = (int) Memory.Here();
+                intrp.InterpretAll();
+                ((int) Memory.Here()).Should().Be(before + 10);
             }
         }
 

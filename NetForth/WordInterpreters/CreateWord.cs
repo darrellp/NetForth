@@ -4,7 +4,7 @@
     {
         internal override void InterpretWord(string word)
         {
-            Vocabulary.CurrentVocabulary.AddDefinition(word, new IntPrim(Memory.Create(), word));
+            Vocabulary.CurrentVocabulary.AddDefinition(word, new IntPrim(Memory.Here(), word));
             Interpreter.InterpreterStack.Pop();
         }
     }
