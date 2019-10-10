@@ -1,10 +1,10 @@
 ﻿namespace NetForth.WordInterpreters
 {
-    internal class CharWord : WordInterpreter
+    internal class CCharWord : WordInterpreter
     {
         private readonly WordListBuilder _wlbParent;
 
-        internal CharWord(WordListBuilder wlb)
+        internal CCharWord(WordListBuilder wlb)
         {
             _wlbParent = wlb;
         }
@@ -15,4 +15,13 @@
             Interpreter.InterpreterStack.Pop();
         }
 	}
+
+    internal class CharWord : WordInterpreter
+    {
+        internal override void InterpretWord(string word)
+        {
+            DataStack.Stack.Push((int)word[0]);
+            Interpreter.InterpreterStack.Pop();
+        }
+    }
 }

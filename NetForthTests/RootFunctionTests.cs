@@ -88,6 +88,7 @@ namespace NetForthTests
         public void TestCharWord()
         {
             TestScript(": dotest [char] a ; dotest", (int)'a');
+            TestScript("char a", (int)'a');
         }
 
 		private void TestScript(string script, int expected)

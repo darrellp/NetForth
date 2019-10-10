@@ -13,6 +13,7 @@ namespace NetForth
 		#region Setting up root vocabulary
 		internal static void AddRoot()
         {
+            // TODO: Figure out ToString for non-immediate WordInterpreters (i.e., char).
             var rootPrimitives = new Dictionary<string, Evaluable>()
             {
                 {"dup", new Primitive(dup, "dup")},
@@ -84,7 +85,8 @@ namespace NetForth
 				{"?leave", new Primitive(condLeave, "?leave") },
                 {"exit", new Primitive(exit, "exit") },
 				{"c\"", new Primitive(countedString, true) },
-                {"[char]", new Primitive(fromChar, true) },
+                {"[char]", new Primitive(fromCChar, true) },
+                {"char", new Primitive(fromChar, "char") },
 			};
 
             Vocabulary.AddVocabulary(new Vocabulary(rootPrimitives));
@@ -97,12 +99,15 @@ namespace NetForth
 			Interpreter.InterpreterStack.Push(new FString(wlb));
 		}
 
-        private static void fromChar(WordListBuilder wlb)
+        private static void fromCChar(WordListBuilder wlb)
         {
-            Interpreter.InterpreterStack.Push(new CharWord(wlb));
+            Interpreter.InterpreterStack.Push(new CCharWord(wlb));
         }
 
-
+        private static void fromChar()
+        {
+            Interpreter.InterpreterStack.Push(new CharWord());
+        }
 		#endregion
 
 		#region Flow of Control
