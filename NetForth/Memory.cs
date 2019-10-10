@@ -10,12 +10,12 @@ namespace NetForth
         internal static int Allocate(int cb = 4)
         {
 #if MEMORYCHECK
-			if (_freeOffset + cb > Session.CbMemory)
+			if (_freeOffset + cb > FSession.CbMemory)
             {
                 throw new NfException("Out of memory");
             }
 #endif
-			var ret = (int)Session.Memory + _freeOffset;
+			var ret = (int)FSession.Memory + _freeOffset;
             _freeOffset += cb;
             return ret;
         }
@@ -101,9 +101,9 @@ namespace NetForth
         private static void  CheckAddress(IntPtr ptr)
         {
             var iPtr = (int) ptr;
-            var iMemory = (int) Session.Memory;
+            var iMemory = (int) FSession.Memory;
 
-            if (iPtr < iMemory || iPtr >= iMemory + Session.CbMemory)
+            if (iPtr < iMemory || iPtr >= iMemory + FSession.CbMemory)
             {
                 throw new NfException("Invalid memory access");
             }

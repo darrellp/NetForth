@@ -91,9 +91,25 @@ namespace NetForthTests
             TestScript("char a", 'a');
         }
 
+        [TestMethod]
+        public void TestCreate()
+        {
+            using (var fsession = new FSession())
+            {
+                var intrp = new Interpreter("create thisSpot thisSpot");
+                intrp.InterpretAll();
+                Stack[0].Should().Be((int) FSession.Memory);
+            }
+        }
+
+        [TestMethod]
+        public void TestTemplate()
+        {
+        }
+
 		private void TestScript(string script, int expected)
         {
-            using (var unused = new Session())
+            using (var unused = new FSession())
             {
                 var intrp = new Interpreter(script);
 				try

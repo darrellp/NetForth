@@ -12,7 +12,7 @@ namespace NetForth
 
 	    public Interpreter(TextReader sr)
         {
-            if ((int)Session.Memory == 0)
+            if ((int)FSession.Memory == 0)
             {
                 throw new NfException("Interpreting without a valid session");
             }

@@ -25,9 +25,9 @@ namespace NetForth
         {
             if (_action != null)
             {
-                Session.RunningPrimitive = this;
+                FSession.RunningPrimitive = this;
                 _action();
-                Session.RunningPrimitive = null;
+                FSession.RunningPrimitive = null;
             }
 			else
 			{

@@ -86,6 +86,7 @@ namespace NetForth
 				{"c\"", new Primitive(countedString, true) },
                 {"[char]", new Primitive(fromCChar, true) },
                 {"char", new Primitive(fromChar, "char") },
+                {"create", new Primitive(create, "create") },
 			};
 
             Vocabulary.AddVocabulary(new Vocabulary(rootPrimitives));
@@ -156,7 +157,7 @@ namespace NetForth
 
 		private static void leave()
         {
-            Session.RunningPrimitive.Leave(Evaluable.ExitType.Leave);
+            FSession.RunningPrimitive.Leave(Evaluable.ExitType.Leave);
         }
 
 		private static void condLeave()
@@ -169,7 +170,7 @@ namespace NetForth
 
         private static void exit()
         {
-            Session.RunningPrimitive.Leave(Evaluable.ExitType.Exit);
+            FSession.RunningPrimitive.Leave(Evaluable.ExitType.Exit);
         }
 		#endregion
 
@@ -238,7 +239,7 @@ namespace NetForth
 
         private static void create()
         {
-
+            Interpreter.InterpreterStack.Push(new CreateWord());
         }
 		#endregion
 

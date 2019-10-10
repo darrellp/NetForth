@@ -30,7 +30,8 @@ namespace NetForth
 
         public void AddDefinition(string word, Evaluable eval)
         {
-            _mapStoEvl[word] = eval;
+            var lcWord = word.ToLower();
+            _mapStoEvl[lcWord] = eval;
         }
 
         internal static void AddVocabulary(Vocabulary vocabulary)
