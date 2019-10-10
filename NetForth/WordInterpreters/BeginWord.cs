@@ -6,12 +6,14 @@
 		{
 			private readonly WordList _wlBegin;
 			private bool _leave;
-            private bool _isUntil;
+            private readonly bool _isUntil;
+            Evaluable _evalCond;
 
-			internal BeginPrim(WordList wlBegin, bool isUntil = false)
+			internal BeginPrim(WordList wlBegin, bool isUntil = false, Evaluable evalCond = null)
 			{
 				_wlBegin = wlBegin;
                 _isUntil = isUntil;
+                _evalCond = evalCond;
             }
 
 			internal override void Leave(ExitType exitType)
@@ -29,6 +31,14 @@
 				{
 					while (true)
 					{
+                        if (_evalCond != null)
+                        {
+                            _evalCond.Eval();
+                            if (DataStack.Stack.Pop() == 0)
+                            {
+                                return;
+                            }
+                        }
 						_wlBegin.Eval(this);
 						if (_leave)
 						{
@@ -49,33 +59,59 @@
 					_leave = false;
 				}
 			}
-		}
+
+            public override string ToString()
+            {
+                if (_evalCond != null)
+                {
+                    return $"begin {_evalCond.ToString()} while {_wlBegin.ToString()}";
+                }
+
+                var terminator = _isUntil ? "until" : "again";
+
+                return $"begin {_wlBegin.ToString()} {terminator}";
+            }
+        }
 
 		private readonly WordListBuilder _wlbParent;
 		private readonly WordListBuilder _wlbBegin = new WordListBuilder();
+        private Evaluable _evalCond;
 
 		internal BeginWord(WordListBuilder wlb)
 		{
 			_wlbParent = wlb;
 		}
 
-		internal override void InterpretWord(string word)
-		{
-			if (word == "again")
-			{
-				_wlbParent.Add(new BeginPrim(_wlbBegin.Realize()));
-				Interpreter.InterpreterStack.Pop();
-				return;
-			}
-
-            if (word == "until")
+        internal override void InterpretWord(string word)
+        {
+            switch (word)
             {
-                _wlbParent.Add(new BeginPrim(_wlbBegin.Realize(), true));
-                Interpreter.InterpreterStack.Pop();
-                return;
+                case "again":
+                    _wlbParent.Add(new BeginPrim(_wlbBegin.Realize()));
+                    Interpreter.InterpreterStack.Pop();
+                    return;
+
+                case "until":
+                    _wlbParent.Add(new BeginPrim(_wlbBegin.Realize(), true));
+                    Interpreter.InterpreterStack.Pop();
+                    return;
+
+                case "while":
+                    _evalCond = _wlbBegin.Realize();
+                    _wlbBegin.Clear();
+                    return;
+
+                case "repeat" when _evalCond == null:
+                    Interpreter.InterpreterStack.Pop();
+                    throw new NfException("\"begin...repeat\" with no while");
+
+                case "repeat":
+                    _wlbParent.Add(new BeginPrim(_wlbBegin.Realize(), false, _evalCond));
+                    Interpreter.InterpreterStack.Pop();
+                    return;
             }
 
-			var evaluable = EvalWord.ParseWord(word);
+            var evaluable = EvalWord.ParseWord(word);
 			if (evaluable == null)
 			{
 				// TODO: get more robust error handling

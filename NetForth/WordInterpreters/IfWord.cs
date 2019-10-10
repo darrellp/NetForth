@@ -1,4 +1,5 @@
-﻿using static NetForth.DataStack;
+﻿using System.Text;
+using static NetForth.DataStack;
 
 namespace NetForth.WordInterpreters
 {
@@ -25,6 +26,18 @@ namespace NetForth.WordInterpreters
                 {
                     _wlElse?.Eval(this);
                 }
+            }
+
+            public override string ToString()
+            {
+                var sb = new StringBuilder();
+                sb.Append("if ");
+                if (_wlElse != null)
+                {
+                    sb.Append(_wlElse.ToString() + " else ");
+                }
+                sb.Append(_wlThen.ToString() + " then");
+                return sb.ToString();
             }
         }
 

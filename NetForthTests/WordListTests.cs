@@ -13,9 +13,9 @@ namespace NetForthTests
 		{
             var val1 = 0;
             var val2 = 0;
-            var test1 = new Primitive(() => val1 = 5);
-            var test2 = new Primitive(() => val2 = 10);
-            var wordList = new WordList(new List<Evaluable>() { test1, test2});
+            var test1 = new Primitive(() => val1 = 5, "");
+            var test2 = new Primitive(() => val2 = 10, "");
+            var wordList = new WordList("", new List<Evaluable>() { test1, test2});
             wordList.Eval();
             val1.Should().Be(5);
             val2.Should().Be(10);
@@ -31,7 +31,7 @@ namespace NetForthTests
             plus.Should().NotBeNull();
             dup.Should().NotBeNull();
             // Should be 20 + 2 * 10 = 40.
-            var def = new WordList(intPrim20, intPrim10, dup, plus, plus);
+            var def = new WordList("", intPrim20, intPrim10, dup, plus, plus);
             def.Eval();
             var val = DataStack.Stack.Pop();
             DataStack.Stack.Should().BeEmpty();

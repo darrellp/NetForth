@@ -31,6 +31,7 @@ namespace NetForthTests
         {
             TestScript(": dotest 0 begin 1 + dup 5 > if exit then again ; dotest", 6);
             TestScript(": dotest 0 begin 1 + dup 5 > until ; dotest", 6);
+            TestScript(": dotest 0 0 begin 1 + dup 6 < while swap 2 + swap repeat drop ; dotest", 10);
         }
 
 		[TestMethod]

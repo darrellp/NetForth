@@ -13,5 +13,10 @@
         {
             DataStack.Stack.Push(_value);
         }
+
+        public override string ToString()
+        {
+            return _value.ToString();
+        }
     }
 }

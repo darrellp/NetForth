@@ -6,11 +6,13 @@ namespace NetForth
     {
         private readonly Action _action;
         private readonly Action<WordListBuilder> _wordListAction;
+        internal string Name { get; }
 
-        internal Primitive(Action action, bool isImmediate = false)
+        internal Primitive(Action action, string name, bool isImmediate = false)
         {
             _action = action;
             IsImmediate = isImmediate;
+            Name = name;
         }
 
         internal Primitive(Action<WordListBuilder> action, bool isImmediate = false)
@@ -31,6 +33,11 @@ namespace NetForth
 			{
                  _wordListAction(wlb);
             }
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }

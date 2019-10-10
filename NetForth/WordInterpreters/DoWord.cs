@@ -1,4 +1,5 @@
-﻿using static NetForth.DataStack;
+﻿using System.Text;
+using static NetForth.DataStack;
 
 namespace NetForth.WordInterpreters
 {
@@ -14,7 +15,29 @@ namespace NetForth.WordInterpreters
 			private readonly bool _isQuestDo;
             private bool _leave;
 
-			internal DoPrim(WordList wlDo, bool plusLoop = false, bool isQuestDo = false)
+            public override string ToString()
+            {
+                StringBuilder sb = new StringBuilder();
+                
+                if (_isQuestDo)
+                {
+                    sb.Append("?");
+                }
+
+                sb.Append("do ");
+                sb.Append(_wlDo.ToString());
+                sb.Append(" ");
+
+                if (_plusLoop)
+                {
+                    sb.Append("+");
+                }
+
+                sb.Append("loop");
+                return sb.ToString();
+            }
+
+            internal DoPrim(WordList wlDo, bool plusLoop = false, bool isQuestDo = false)
             {
                 _wlDo = wlDo;
 				_plusLoop = plusLoop;

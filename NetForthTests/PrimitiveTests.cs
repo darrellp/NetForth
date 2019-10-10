@@ -11,7 +11,7 @@ namespace NetForthTests
 		public void TestPrimitiveCreation()
         {
             var val = 0;
-            var test = new Primitive(() => val = 5);
+            var test = new Primitive(() => val = 5, "");
             test.Eval();
             val.Should().Be(5, "because the primitive should have set it");
         }

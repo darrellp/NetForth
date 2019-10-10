@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace NetForth
 {
@@ -8,13 +9,15 @@ namespace NetForth
         private readonly List<Evaluable> _subwords;
         // Is this for a defined word or created on the fly by flow of control constructs?
         private readonly bool _isDefined;
+        private readonly string _name;
 
         private bool _leave;
 
-        public WordList(List<Evaluable> subwords = null, bool isDefined = false)
+        public WordList(string name, List<Evaluable> subwords, bool isDefined = false)
         {
             _subwords = subwords ?? new List<Evaluable>();
             _isDefined = isDefined;
+            _name = name;
         }
 
         internal override void Leave(ExitType exitType)
@@ -26,7 +29,7 @@ namespace NetForth
             }
         }
 
-        public WordList(params Evaluable[] subwords) : this(subwords.ToList()) { }
+        public WordList(string name, params Evaluable[] subwords) : this(name, subwords.ToList()) { }
 
         protected override void InnerEval(WordListBuilder _)
         {
@@ -45,6 +48,20 @@ namespace NetForth
             {
                 _leave = false;
             }
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            var prependBlank = false;
+            foreach (var evaluable in _subwords)
+            {
+                var lead = prependBlank ? " " : "";
+                prependBlank = true;
+                sb.Append(lead + evaluable.ToString());
+            }
+
+            return sb.ToString();
         }
     }
 }
