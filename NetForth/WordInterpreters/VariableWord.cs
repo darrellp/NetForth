@@ -6,7 +6,7 @@
         {
             var address = Memory.Allocate();
             Memory.StoreInt(address, 0);
-            Vocabulary.CurrentVocabulary.AddDefinition(word, new IntPrim(address));
+            Vocabulary.CurrentVocabulary.AddDefinition(word, new IntPrim(address, word));
             Interpreter.InterpreterStack.Pop();
         }
 	}

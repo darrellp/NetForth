@@ -20,6 +20,11 @@ namespace NetForth
             return ret;
         }
 
+        internal static int Create()
+        {
+            return Allocate(0);
+        }
+
         internal static int FetchInt(int address)
         {
             CheckBlock((IntPtr)address);

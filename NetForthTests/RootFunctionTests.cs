@@ -23,7 +23,7 @@ namespace NetForthTests
 		[TestMethod]
 		public void TestIf()
 		{
-			TestScript(": iftest if 100 else 200 then ; 0 iftest", 100);
+			TestScript(": iftest if 100 else 200 then ; 0 iftest 1 iftest +", 300);
 		}
 
         [TestMethod]
@@ -87,13 +87,13 @@ namespace NetForthTests
         [TestMethod]
         public void TestCharWord()
         {
-            TestScript(": dotest [char] a ; dotest", (int)'a');
-            TestScript("char a", (int)'a');
+            TestScript(": dotest [char] a ; dotest", 'a');
+            TestScript("char a", 'a');
         }
 
 		private void TestScript(string script, int expected)
         {
-            using (var nf = new Session())
+            using (var unused = new Session())
             {
                 var intrp = new Interpreter(script);
 				try

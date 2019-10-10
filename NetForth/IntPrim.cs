@@ -3,10 +3,12 @@
     internal class IntPrim : Evaluable
     {
         private readonly int _value;
+        private readonly string _name;
 
-        internal IntPrim(int value)
+        internal IntPrim(int value, string name = null)
         {
             _value = value;
+            _name = name;
         }
 
         protected override void InnerEval(WordListBuilder wlb)
@@ -16,7 +18,7 @@
 
         public override string ToString()
         {
-            return _value.ToString();
+            return _name != null ? $"{_name}({_value})" : _value.ToString();
         }
     }
 }

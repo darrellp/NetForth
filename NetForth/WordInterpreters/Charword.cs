@@ -11,7 +11,7 @@
 
         internal override void InterpretWord(string word)
         {
-            _wlbParent.Add(new IntPrim((int)word[0]));
+            _wlbParent.Add(new IntPrim((int)word[0], word));
             Interpreter.InterpreterStack.Pop();
         }
 	}

@@ -62,6 +62,7 @@
     <Compile Include="WordInterpreters\CharWord.cs" />
     <Compile Include="WordInterpreters\CommentWord.cs" />
     <Compile Include="WordInterpreters\ConstantWord.cs" />
+    <Compile Include="WordInterpreters\CreateWord.cs" />
     <Compile Include="WordInterpreters\DefinitionWord.cs" />
     <Compile Include="WordInterpreters\DoWord.cs" />
     <Compile Include="WordInterpreters\EvalWord.cs" />

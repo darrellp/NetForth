@@ -13,7 +13,6 @@ namespace NetForth
 		#region Setting up root vocabulary
 		internal static void AddRoot()
         {
-            // TODO: Figure out ToString for non-immediate WordInterpreters (i.e., char).
             var rootPrimitives = new Dictionary<string, Evaluable>()
             {
                 {"dup", new Primitive(dup, "dup")},
@@ -235,6 +234,11 @@ namespace NetForth
             var address = Stack.Pop();
             var delta = Stack.Pop();
             Memory.StoreInt(address, Memory.FetchInt(address) + delta);
+        }
+
+        private static void create()
+        {
+
         }
 		#endregion
 
