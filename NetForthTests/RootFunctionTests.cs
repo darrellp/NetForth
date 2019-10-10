@@ -103,6 +103,22 @@ namespace NetForthTests
         }
 
         [TestMethod]
+        public void TestComma()
+        {
+            using (var unused = new FSession())
+            {
+                var intrp = new Interpreter("5 ,");
+                intrp.InterpretAll();
+                var val = Memory.FetchInt((int) Memory.Create() - sizeof(int));
+                val.Should().Be(5);
+                intrp = new Interpreter("char P c,");
+                intrp.InterpretAll();
+                var valc = Memory.FetchChar((int)Memory.Create() - sizeof(char));
+                valc.Should().Be('P');
+            }
+        }
+
+		[TestMethod]
         public void TestTemplate()
         {
         }

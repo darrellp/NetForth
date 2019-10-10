@@ -43,6 +43,18 @@ namespace NetForth
             return *(short*)address;
         }
 
+        internal static void StoreChar(int address, char ch)
+        {
+            CheckBlock((IntPtr)address, 1);
+            *(char*) address = ch;
+        }
+
+        internal static char FetchChar(int address)
+        {
+            CheckBlock((IntPtr)address, 1);
+            return *(char*)address;
+        }
+
         internal static void StoreShort(int address, short value)
         {
             CheckBlock((IntPtr)address, 2);

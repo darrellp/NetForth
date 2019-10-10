@@ -87,6 +87,8 @@ namespace NetForth
                 {"[char]", new Primitive(fromCChar, true) },
                 {"char", new Primitive(fromChar, "char") },
                 {"create", new Primitive(create, "create") },
+                {",", new Primitive(comma, ",") },
+                {"c,", new Primitive(charComma, "c,") },
 			};
 
             Vocabulary.AddVocabulary(new Vocabulary(rootPrimitives));
@@ -183,6 +185,16 @@ namespace NetForth
         private static void chars()
         {
             Stack[-1] *= 2;
+        }
+
+        private static void comma()
+        {
+            Memory.StoreInt(Memory.Allocate(), Stack.Pop());
+        }
+
+        private static void charComma()
+        {
+            Memory.StoreChar(Memory.Allocate(sizeof(char)), (char)Stack.Pop());
         }
 
         private static void constant()
