@@ -2,23 +2,24 @@
 {
     internal class IntPrim : Evaluable
     {
-        private readonly int _value;
         private readonly string _name;
+
+        internal int Value { get; }
 
         internal IntPrim(int value, string name = null)
         {
-            _value = value;
+            Value = value;
             _name = name;
         }
 
-        protected override void InnerEval(WordListBuilder wlb)
+        protected override void InnerEval(WordListBuilder _)
         {
-            DataStack.Stack.Push(_value);
+            DataStack.Stack.Push(Value);
         }
 
         public override string ToString()
         {
-            return _name != null ? $"{_name}({_value})" : _value.ToString();
+            return _name != null ? $"{_name}({Value})" : Value.ToString();
         }
     }
 }

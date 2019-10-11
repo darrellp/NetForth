@@ -18,7 +18,7 @@ namespace NetForthTests
         [TestMethod]
         public void TestComments()
         {
-            using (var nf = new FSession())
+            using (var nf = new Session())
             {
                 var code = @"
 20 10 \ This is a test
@@ -37,7 +37,7 @@ dup ( This is
 
         private void TestScript(string script, int expected)
         {
-            using (var nf = new FSession())
+            using (var nf = new Session())
             {
                 var intrp = new Interpreter(script);
                 intrp.InterpretAll();
@@ -50,7 +50,7 @@ dup ( This is
         [TestMethod]
         public void TestUndefinedWord()
         {
-            using (var nf = new FSession())
+            using (var nf = new Session())
             {
                 var intrp = new Interpreter("doggy");
                 Action act = () => intrp.InterpretAll();
@@ -72,7 +72,7 @@ dup ( This is
         [TestMethod]
         public void TestStackUnderflow()
         {
-            using (var nf = new FSession())
+            using (var nf = new Session())
             {
                 var intrp = new Interpreter("*");
                 Action act = () => intrp.InterpretAll();
@@ -85,7 +85,7 @@ dup ( This is
         [TestMethod]
         public void TestStackIndexRange()
         {
-            using (var nf = new FSession())
+            using (var nf = new Session())
             {
                 Action act = () =>
                 {

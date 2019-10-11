@@ -94,18 +94,18 @@ namespace NetForthTests
         [TestMethod]
         public void TestCreate()
         {
-            using (var fsession = new FSession())
+            using (var fsession = new Session())
             {
                 var intrp = new Interpreter("create thisSpot thisSpot");
                 intrp.InterpretAll();
-                Stack[0].Should().Be((int) FSession.Memory);
+                Stack[0].Should().Be((int) Session.Memory);
             }
         }
 
         [TestMethod]
         public void TestComma()
         {
-            using (var unused = new FSession())
+            using (var unused = new Session())
             {
                 var intrp = new Interpreter("5 ,");
                 intrp.InterpretAll();
@@ -121,7 +121,7 @@ namespace NetForthTests
         [TestMethod]
         public void TestAllocation()
         {
-            using (var unused = new FSession())
+            using (var unused = new Session())
             {
                 var intrp = new Interpreter("here");
                 intrp.InterpretAll();
@@ -134,13 +134,19 @@ namespace NetForthTests
         }
 
 		[TestMethod]
+        public void TestDoes()
+        {
+            TestScript(": myCnst create , does> @ ; 10 myCnst ten ten", 10);
+        }
+
+		[TestMethod]
         public void TestTemplate()
         {
         }
 
 		private void TestScript(string script, int expected)
         {
-            using (var unused = new FSession())
+            using (var unused = new Session())
             {
                 var intrp = new Interpreter(script);
 				try

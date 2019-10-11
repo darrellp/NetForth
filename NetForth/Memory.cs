@@ -5,18 +5,16 @@ namespace NetForth
 {
     internal static unsafe class Memory
     {
-        private static int _freeOffset;
-
         internal static int Allocate(int cb = 4)
         {
 #if MEMORYCHECK
-			if (_freeOffset + cb > FSession.CbMemory)
+			if (Session.FreeOffset + cb > Session.CbMemory)
             {
                 throw new NfException("Out of memory");
             }
 #endif
-			var ret = (int)FSession.Memory + _freeOffset;
-            _freeOffset += cb;
+			var ret = (int)Session.Memory + Session.FreeOffset;
+            Session.FreeOffset += cb;
             return ret;
         }
 
@@ -113,9 +111,9 @@ namespace NetForth
         private static void  CheckAddress(IntPtr ptr)
         {
             var iPtr = (int) ptr;
-            var iMemory = (int) FSession.Memory;
+            var iMemory = (int) Session.Memory;
 
-            if (iPtr < iMemory || iPtr >= iMemory + FSession.CbMemory)
+            if (iPtr < iMemory || iPtr >= iMemory + Session.CbMemory)
             {
                 throw new NfException("Invalid memory access");
             }

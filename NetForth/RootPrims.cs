@@ -161,7 +161,7 @@ namespace NetForth
 
 		private static void leave()
         {
-            FSession.RunningPrimitive.Leave(Evaluable.ExitType.Leave);
+            Session.RunningPrimitive.Leave(Evaluable.ExitType.Leave);
         }
 
 		private static void condLeave()
@@ -174,7 +174,7 @@ namespace NetForth
 
         private static void exit()
         {
-            FSession.RunningPrimitive.Leave(Evaluable.ExitType.Exit);
+            Session.RunningPrimitive.Leave(Evaluable.ExitType.Exit);
         }
 		#endregion
 

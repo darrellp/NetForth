@@ -3,16 +3,19 @@ using System.Runtime.InteropServices;
 
 namespace NetForth
 {
-	internal class FSession : IDisposable
+	internal class Session : IDisposable
     {
         internal static IntPtr Memory;
         internal static int CbMemory;
         internal static Primitive RunningPrimitive;
+        internal static int FreeOffset;
+        internal static string LastDefinedWord;
 
-        public FSession(int cbMemory = 5000)
+		public Session(int cbMemory = 5000)
         {
             CbMemory = cbMemory;
             Memory = Marshal.AllocHGlobal(CbMemory);
+            FreeOffset = 0;
         }
 
         private void ReleaseUnmanagedResources()
@@ -27,7 +30,7 @@ namespace NetForth
             GC.SuppressFinalize(this);
         }
 
-        ~FSession()
+        ~Session()
         {
             ReleaseUnmanagedResources();
         }

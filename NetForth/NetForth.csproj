@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataStack.cs" />
+    <Compile Include="DoesList.cs" />
     <Compile Include="Evaluable.cs" />
     <Compile Include="ForthStack.cs" />
     <Compile Include="Interpreter.cs" />

@@ -11,7 +11,7 @@ namespace NetForthTests
         [TestMethod]
         public void TestVariable()
         {
-            using (var nf = new FSession())
+            using (var nf = new Session())
             {
                 var intrp = new Interpreter("variable doggy 20 doggy ! doggy @");
                 intrp.InterpretAll();
@@ -24,7 +24,7 @@ namespace NetForthTests
         [TestMethod]
         public void TestMemAdd()
         {
-            using (var nf = new FSession())
+            using (var nf = new Session())
             {
                 var intrp = new Interpreter("variable doggy 20 doggy ! 10 doggy +! doggy @");
                 intrp.InterpretAll();

@@ -6,10 +6,10 @@ namespace NetForth
 {
     internal class WordList : Evaluable
     {
-        private readonly List<Evaluable> _subwords;
-        // Is this for a defined word or created on the fly by flow of control constructs?
-        private readonly bool _isDefined;
-        private readonly string _name;
+        protected readonly List<Evaluable> _subwords;
+		// Is this for a defined word or created on the fly by flow of control constructs?
+        protected readonly bool _isDefined;
+        protected readonly string _name;
 
         private bool _leave;
 
@@ -58,7 +58,7 @@ namespace NetForth
             {
                 var lead = prependBlank ? " " : "";
                 prependBlank = true;
-                sb.Append(lead + evaluable.ToString());
+                sb.Append(lead + evaluable);
             }
 
             return sb.ToString();
