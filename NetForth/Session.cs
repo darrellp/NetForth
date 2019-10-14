@@ -8,6 +8,7 @@ namespace NetForth
         internal static IntPtr Memory;
         internal static int CbMemory;
         internal static Primitive RunningPrimitive;
+        internal static LookAhead RunningLookAhead;
         internal static int FreeOffset;
         internal static string LastDefinedWord;
 
@@ -16,6 +17,7 @@ namespace NetForth
             CbMemory = cbMemory;
             Memory = Marshal.AllocHGlobal(CbMemory);
             FreeOffset = 0;
+            Vocabulary.Init();
         }
 
         private void ReleaseUnmanagedResources()

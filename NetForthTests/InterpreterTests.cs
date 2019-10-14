@@ -12,7 +12,7 @@ namespace NetForthTests
         [TestMethod]
         public void TestInterpret()
         {
-            TestScript("20 10 dup + +", 40);
+            NewTestScript("20 10 dup + +", 40);
         }
 
         [TestMethod]
@@ -25,22 +25,22 @@ namespace NetForthTests
 dup ( This is
       a multiline comment ) +
 +";
-                TestScript(code, 40);
+                NewTestScript(code, 40);
             }
         }
 
         [TestMethod]
         public void TestDefine()
         {
-            TestScript(": square ( n -- n^2 ) dup * ; 3 square", 9);
+            NewTestScript(": square ( n -- n^2 ) dup * ; 3 square", 9);
         }
 
-        private void TestScript(string script, int expected)
+        private void NewTestScript(string script, int expected)
         {
             using (var nf = new Session())
             {
                 var intrp = new Interpreter(script);
-                intrp.InterpretAll();
+                intrp.Interpret();
                 Stack.Should().HaveCount(1);
                 Stack[0].Should().Be(expected);
                 Stack.Clear();
@@ -53,7 +53,7 @@ dup ( This is
             using (var nf = new Session())
             {
                 var intrp = new Interpreter("doggy");
-                Action act = () => intrp.InterpretAll();
+                Action act = () => intrp.Interpret();
                 act
                     .Should().Throw<NfException>()
                     .WithMessage("Couldn't locate word doggy");
@@ -75,7 +75,7 @@ dup ( This is
             using (var nf = new Session())
             {
                 var intrp = new Interpreter("*");
-                Action act = () => intrp.InterpretAll();
+                Action act = () => intrp.Interpret();
                 act
                     .Should().Throw<NfException>()
                     .WithMessage("Stack underflow");

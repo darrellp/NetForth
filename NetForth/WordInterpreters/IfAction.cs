@@ -1,0 +1,101 @@
+﻿using System.Text;
+using static NetForth.DataStack;
+
+namespace NetForth.WordInterpreters
+{
+    internal static class IfAction
+    {
+        private class IfPrim : Evaluable
+        {
+            private readonly WordList _wlThen;
+            private readonly WordList _wlElse;
+
+            internal IfPrim(WordList wlThen, WordList wlElse)
+            {
+                _wlThen = wlThen;
+                _wlElse = wlElse;
+            }
+
+            internal override ExitType NewEval(Tokenizer _)
+            {
+                if (Stack.Pop() != 0)
+                {
+                    var retThen = _wlThen.NewEval();
+
+					if (retThen != ExitType.Okay)
+                    {
+                        return retThen;
+                    }
+                }
+                else
+                {
+                    if (_wlElse != null)
+                    {
+                        var retElse = _wlElse.NewEval();
+
+                        if (retElse != ExitType.Okay)
+                        {
+                            return retElse;
+                        }
+                    }
+				}
+
+                return ExitType.Okay;
+            }
+
+            protected virtual void Eval(WordListBuilder wlb)
+            {
+            }
+
+            public override string ToString()
+            {
+                var sb = new StringBuilder();
+                sb.Append("if ");
+                if (_wlElse != null)
+                {
+                    sb.Append(_wlElse.ToString() + " else ");
+                }
+                sb.Append(_wlThen.ToString() + " then");
+                return sb.ToString();
+            }
+        }
+
+        internal static void If(Tokenizer tokenizer, WordListBuilder wlbParent)
+        {
+            var wlbThenClause = new WordListBuilder();
+            var wlbElseClause = new WordListBuilder();
+            while (true)
+            {
+                var word = tokenizer.NextToken().ToLower();
+
+                // ReSharper disable once SwitchStatementMissingSomeCases
+                switch (word)
+                {
+                    case "then":
+                        wlbParent.Add(new IfPrim(wlbThenClause.Realize(), wlbElseClause?.Realize()));
+                        return;
+
+                    case "else":
+                        wlbElseClause = wlbThenClause;
+                        wlbThenClause = new WordListBuilder();
+                        continue;
+                }
+
+                var evaluable = Interpreter.ParseWord(word);
+                if (evaluable == null)
+                {
+                    // TODO: get more robust error handling
+                    throw new NfException($"Couldn't locate word {word}");
+                }
+
+                if (evaluable.IsImmediate)
+                {
+                    evaluable.NewEval(tokenizer, wlbThenClause);
+                    continue;
+                }
+
+                wlbThenClause.Add(evaluable);
+            }
+		}
+    }
+}

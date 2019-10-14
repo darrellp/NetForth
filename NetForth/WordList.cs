@@ -11,8 +11,6 @@ namespace NetForth
         protected readonly bool _isDefined;
         protected readonly string _name;
 
-        private bool _leave;
-
         public WordList(string name, List<Evaluable> subwords, bool isDefined = false)
         {
             _subwords = subwords ?? new List<Evaluable>();
@@ -20,34 +18,30 @@ namespace NetForth
             _name = name;
         }
 
-        internal override void Leave(ExitType exitType)
+        protected virtual void Eval(WordListBuilder wlb)
         {
-            _leave = true;
-            if (!_isDefined || exitType == ExitType.Leave)
-            {
-                _parent.Leave(exitType);
-            }
+            throw new System.NotImplementedException();
         }
 
         public WordList(string name, params Evaluable[] subwords) : this(name, subwords.ToList()) { }
 
-        protected override void InnerEval(WordListBuilder _)
+        internal override ExitType NewEval(Tokenizer _ = null)
         {
-            try
+            foreach (var evaluable in _subwords)
             {
-                foreach (var evaluable in _subwords)
+                var et = evaluable.NewEval();
+
+				if (et != ExitType.Okay)
                 {
-                    evaluable.Eval(this);
-                    if (_leave)
+                    if (_isDefined && et == ExitType.Exit)
                     {
-                        return;
+                        return ExitType.Okay;
                     }
+                    return et;
                 }
             }
-            finally
-            {
-                _leave = false;
-            }
+
+            return ExitType.Okay;
         }
 
         public override string ToString()

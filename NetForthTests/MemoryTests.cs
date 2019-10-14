@@ -14,7 +14,7 @@ namespace NetForthTests
             using (var nf = new Session())
             {
                 var intrp = new Interpreter("variable doggy 20 doggy ! doggy @");
-                intrp.InterpretAll();
+                intrp.Interpret();
                 Stack.Should().HaveCount(1);
                 Stack[0].Should().Be(20);
                 Stack.Clear();
@@ -27,7 +27,7 @@ namespace NetForthTests
             using (var nf = new Session())
             {
                 var intrp = new Interpreter("variable doggy 20 doggy ! 10 doggy +! doggy @");
-                intrp.InterpretAll();
+                intrp.Interpret();
                 Stack.Should().HaveCount(1);
                 Stack[0].Should().Be(30);
                 Stack.Clear();

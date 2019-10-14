@@ -2,26 +2,34 @@
 {
     internal abstract class Evaluable
     {
-        internal enum ExitType
+		#region Enums
+		internal enum ExitType
         {
+            Okay,
             Leave,
-            Exit
+            Exit,
         }
+		#endregion
 
-        internal bool IsImmediate { get; set; }
-        protected Evaluable _parent;
+		#region Public properties
+		internal bool IsImmediate { get; set; }
+		#endregion
 
-        internal void Eval(Evaluable parent = null, WordListBuilder wlb = null)
+		#region Evaluation
+		internal virtual ExitType NewEval()
         {
-            _parent = parent;
-            InnerEval(wlb);
+            return NewEval(null);
         }
 
-        protected abstract void InnerEval(WordListBuilder wlb);
-
-        internal virtual void  Leave(ExitType exitType)
+        internal virtual ExitType NewEval(Tokenizer tokenizer)
         {
-            _parent?.Leave(exitType);
+            return NewEval(tokenizer, null);
         }
+
+        internal virtual ExitType NewEval(Tokenizer tokenizer, WordListBuilder wlb)
+        {
+            return ExitType.Okay;
+        }
+        #endregion
     }
 }

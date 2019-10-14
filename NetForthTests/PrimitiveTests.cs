@@ -11,8 +11,8 @@ namespace NetForthTests
 		public void TestPrimitiveCreation()
         {
             var val = 0;
-            var test = new Primitive(() => val = 5, "");
-            test.Eval();
+            var test = new NewPrimitive(() => val = 5, "");
+            test.NewEval();
             val.Should().Be(5, "because the primitive should have set it");
         }
 
@@ -21,7 +21,7 @@ namespace NetForthTests
         {
             DataStack.Stack.Clear();
             var intPrim = new IntPrim(13);
-            intPrim.Eval();
+            intPrim.NewEval();
             var val = DataStack.Stack.Pop();
             val.Should().Be(13);
             DataStack.Stack.Should().BeEmpty();

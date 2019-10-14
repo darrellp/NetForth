@@ -2,12 +2,8 @@
 
 namespace NetForth.WordInterpreters
 {
-    internal class DefinitionWord : WordInterpreter
+    internal static class Definition
     {
-        private readonly WordListBuilder _wlb = new WordListBuilder();
-        private string _currentDefWord;
-        private Evaluable _execute;
-
         private class DoesWord : Evaluable
         {
             private Evaluable _compile;
@@ -19,10 +15,9 @@ namespace NetForth.WordInterpreters
                 _run = run;
             }
 
-            protected override void InnerEval(WordListBuilder wlb)
+            protected virtual void Eval(WordListBuilder wlb)
             {
                 Session.LastDefinedWord = null;
-                _compile.Eval();
                 if (Session.LastDefinedWord == null)
                 {
                     return;
@@ -30,58 +25,60 @@ namespace NetForth.WordInterpreters
 
                 var oldDefinition = Vocabulary.Lookup(Session.LastDefinedWord);
                 var newDefinition = new WordList(Session.LastDefinedWord,
-                    new List<Evaluable>() {oldDefinition, _run}, true);
+                    new List<Evaluable>() { oldDefinition, _run }, true);
                 Vocabulary.CurrentVocabulary.AddDefinition(Session.LastDefinedWord, newDefinition);
             }
         }
 
-        internal override void InterpretWord(string word)
+        internal static void ParseDefinition(Tokenizer tokenizer)
         {
-            if (_currentDefWord == null)
-            {
-                _currentDefWord = word;
-                return;
-            }
+            var wlb = new WordListBuilder();
+            string currentDefWord = tokenizer.NextToken().ToLower();
+            Evaluable execute = null;
 
-            if (word == "does>")
+            while (true)
             {
-                _execute = _wlb.Realize(true, _currentDefWord);
-                _wlb.Clear();
-                return;
-            }
+				var word = tokenizer.NextToken().ToLower();
 
-            if (word == ";")
-            {
-                if (_execute == null)
+                if (word == "does>")
                 {
-                    Vocabulary.CurrentVocabulary.AddDefinition(_currentDefWord, _wlb.Realize(true, _currentDefWord));
+                    execute = wlb.Realize(true, currentDefWord);
+                    wlb.Clear();
+                    continue;
                 }
-                else
+
+                if (word == ";")
                 {
-                    var run = _wlb.Realize(true, _currentDefWord);
-                    var compile = _execute;
-                    Vocabulary.CurrentVocabulary.AddDefinition(_currentDefWord, new DoesWord(compile, run));
-				}
+                    if (execute == null)
+                    {
+                        Vocabulary.CurrentVocabulary.AddDefinition(currentDefWord, wlb.Realize(true, currentDefWord));
+                    }
+                    else
+                    {
+                        var run = wlb.Realize(true, currentDefWord);
+                        var compile = execute;
+                        Vocabulary.CurrentVocabulary.AddDefinition(currentDefWord, new DoesWord(compile, run));
+                    }
 
-                Session.LastDefinedWord = null;
-                Interpreter.InterpreterStack.Pop();
-                return;
-            }
+                    Session.LastDefinedWord = null;
+                    return;
+                }
 
-			var evaluable = EvalWord.ParseWord(word);
-            if (evaluable == null)
-            {
-                // TODO: get more robust error handling
-                throw new NfException($"Couldn't locate word {word}");
-            }
+                var evaluable = Interpreter.ParseWord(word);
+                if (evaluable == null)
+                {
+                    // TODO: get more robust error handling
+                    throw new NfException($"Couldn't locate word {word}");
+                }
 
-            if (evaluable.IsImmediate)
-            {
-                evaluable.Eval(null, _wlb);
-                return;
-            }
+                if (evaluable.IsImmediate)
+                {
+                    evaluable.NewEval(tokenizer, wlb);
+                    continue;
+                }
 
-            _wlb.Add(evaluable);
-        }
-	}
+                wlb.Add(evaluable);
+			}
+		}
+    }
 }

@@ -15,10 +15,8 @@ namespace NetForth
             _doeswords = doeswords;
         }
 
-        protected override void InnerEval(WordListBuilder _)
+        protected override void Eval(WordListBuilder _)
         {
-            base.InnerEval(_);
-
         }
     }
 }

@@ -6,9 +6,10 @@ namespace NetForth
 {
     public class Interpreter
     {
-        internal static readonly Stack<WordInterpreter> InterpreterStack = new Stack<WordInterpreter>();
+        //internal static readonly Stack<WordInterpreter> InterpreterStack = new Stack<WordInterpreter>();
 
         private readonly TextReader _sr;
+        private readonly Tokenizer _tokenizer;
 
 	    public Interpreter(TextReader sr)
         {
@@ -17,36 +18,48 @@ namespace NetForth
                 throw new NfException("Interpreting without a valid session");
             }
             _sr = sr;
-            InterpreterStack.Push(new EvalWord());
+            _tokenizer = new Tokenizer(_sr);
 	    }
 
         public Interpreter(string str) : this (new StringReader(str)) { }
 
-        public bool InterpretLine()
+        public void Interpret()
         {
-            var thisLine = _sr.ReadLine();
-            if (thisLine == null)
+            DataStack.Stack.Clear();
+            while (true)
             {
-                return false;
-            }
-            thisLine = thisLine.Trim();
-
-            foreach (var wordIter in thisLine.Split("\t ".ToCharArray()))
-            {
-                var word = wordIter.Trim();
-                if (word.Length == 0)
+                var word = _tokenizer.NextToken(true);
+                if (word == null)
                 {
-                    continue;
+                    return;
                 }
-                InterpreterStack.Peek().InterpretWord(word);
-            }
-            InterpreterStack.Peek().InterpretWord("\n");
-            return true;
-        }
 
-        public void InterpretAll()
+                var evaluable = ParseWord(word);
+                if (evaluable == null)
+                {
+                    // TODO: get more robust error handling
+                    throw new NfException($"Couldn't locate word {word}");
+                }
+
+                var ret = evaluable.NewEval(_tokenizer);
+
+				if (ret == Evaluable.ExitType.Exit)
+                {
+                    DataStack.Stack.Clear();
+                    break;
+                }
+            }
+		}
+
+        internal static Evaluable ParseWord(string word)
         {
-            while (InterpretLine()) { }
+            var lookup = Vocabulary.Lookup(word);
+            if (lookup == null)
+            {
+                var isNumber = int.TryParse(word, out int val);
+                return isNumber ? new IntPrim(val) : null;
+            }
+            return lookup;
         }
     }
 }

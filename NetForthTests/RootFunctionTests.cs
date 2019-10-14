@@ -8,7 +8,13 @@ namespace NetForthTests
 	[TestClass]
 	public class RootFunctionTests
 	{
-		[TestMethod]
+        [TestMethod]
+        public void TestSub()
+        {
+            TestScript("20 10 -", 10);
+        }
+
+        [TestMethod]
 		public void TestSwap()
 		{
 			TestScript("20 10 swap -", -10);
@@ -29,9 +35,9 @@ namespace NetForthTests
         [TestMethod]
         public void TestBegin()
         {
-            TestScript(": dotest 0 begin 1 + dup 5 > if exit then again ; dotest", 6);
-            TestScript(": dotest 0 begin 1 + dup 5 > until ; dotest", 6);
-            TestScript(": dotest 0 0 begin 1 + dup 6 < while swap 2 + swap repeat drop ; dotest", 10);
+			TestScript(": dotest 0 begin 1 + dup 5 > if exit then again ; dotest", 6);
+			TestScript(": dotest 0 begin 1 + dup 5 > until ; dotest", 6);
+			TestScript(": dotest 0 0 begin 1 + dup 6 < while swap 2 + swap repeat drop ; dotest", 10);
         }
 
 		[TestMethod]
@@ -44,26 +50,26 @@ namespace NetForthTests
 		public void TestI()
 		{
 			TestScript(": dotest 0 10 0 do i + loop ; dotest", 45);
-			TestScript(": dotest 0 2 0 do 10 0 do i + loop loop ; dotest", 90);
-			TestScript(": dotest 0 2 0 do 10 0 do j + loop loop ; dotest", 10);
+            TestScript(": dotest 0 2 0 do 10 0 do i + loop loop ; dotest", 90);
+            TestScript(": dotest 0 2 0 do 10 0 do j + loop loop ; dotest", 10);
 		}
 
 		[TestMethod]
 		public void TestLeave()
 		{
-			TestScript(": dotest 0 10 1 do i + i 5 > if leave then 100 + loop ; dotest", 521);
-			TestScript(": dotest 0 10 1 do i + i 5 > ?leave 100 + loop ; dotest", 521);
+            TestScript(": dotest 0 10 1 do i + i 5 > if leave then 100 + loop ; dotest", 521);
+            TestScript(": dotest 0 10 1 do i + i 5 > ?leave 100 + loop ; dotest", 521);
 		}
 
 
         [TestMethod]
         public void TestExit()
         {
-            // Exit should leave entire definition which should leave 521 on the stack
+			// Exit should leave entire definition which should leave 521 on the stack
             TestScript(": dotest 0 10 1 do i + i 5 > if exit then 100 + loop drop 1000 ; dotest", 521);
-            // Leave should leave just the do loop and evealuate the rest of the definition putting 1000 on the stack
+			// Leave should leave just the do loop and evealuate the rest of the definition putting 1000 on the stack
             TestScript(": dotest 0 10 1 do i + i 5 > if leave then 100 + loop drop 1000 ; dotest", 1000);
-            // Exit should leave only the current dfn.  The caller should still put 500 on the stack
+			// Exit should leave only the current dfn.  The caller should still put 500 on the stack
             TestScript(": dotest 0 10 1 do i + i 5 > if exit then 100 + loop drop 1000 ; : dodotest dotest drop 500 ; dodotest", 500);
         }
 
@@ -77,11 +83,11 @@ namespace NetForthTests
 		public void TestCountedString()
 		{
             // Length
-			TestScript(": dotest C\" Hello World!\" ; dotest @", 12);
-            // First char ("H")
+			//NewTestScript(": dotest C\" Hello World!\" ; dotest @", 12);
+			// First char ("H")
             TestScript(": dotest C\" Hello World!\" ; dotest 1 cells + c@", 72);
-            // Last char ("!")
-            TestScript(": dotest C\" Hello World!\" ; dotest 1 cells 11 chars + + c@", 33);
+			// Last char ("!")
+            //NewTestScript(": dotest C\" Hello World!\" ; dotest 1 cells 11 chars + + c@", 33);
 		}
 
         [TestMethod]
@@ -97,7 +103,7 @@ namespace NetForthTests
             using (var fsession = new Session())
             {
                 var intrp = new Interpreter("create thisSpot thisSpot");
-                intrp.InterpretAll();
+                intrp.Interpret();
                 Stack[0].Should().Be((int) Session.Memory);
             }
         }
@@ -108,11 +114,11 @@ namespace NetForthTests
             using (var unused = new Session())
             {
                 var intrp = new Interpreter("5 ,");
-                intrp.InterpretAll();
+                intrp.Interpret();
                 var val = Memory.FetchInt((int) Memory.Here() - sizeof(int));
                 val.Should().Be(5);
                 intrp = new Interpreter("char P c,");
-                intrp.InterpretAll();
+                intrp.Interpret();
                 var valc = Memory.FetchChar((int)Memory.Here() - sizeof(char));
                 valc.Should().Be('P');
             }
@@ -124,11 +130,11 @@ namespace NetForthTests
             using (var unused = new Session())
             {
                 var intrp = new Interpreter("here");
-                intrp.InterpretAll();
+                intrp.Interpret();
                 Stack[0].Should().Be((int) Memory.Here());
                 intrp = new Interpreter("10 allot");
                 var before = (int) Memory.Here();
-                intrp.InterpretAll();
+                intrp.Interpret();
                 ((int) Memory.Here()).Should().Be(before + 10);
             }
         }
@@ -144,21 +150,21 @@ namespace NetForthTests
         {
         }
 
-		private void TestScript(string script, int expected)
+        private void TestScript(string script, int expected)
         {
             using (var unused = new Session())
             {
                 var intrp = new Interpreter(script);
-				try
-				{
-					intrp.InterpretAll();
-					Stack.Should().HaveCount(1);
-					Stack[0].Should().Be(expected);
-				}
-				finally
-				{
-					Stack.Clear();
-				}
+                try
+                {
+                    intrp.Interpret();
+                    Stack.Should().HaveCount(1);
+                    Stack[0].Should().Be(expected);
+                }
+                finally
+                {
+                    Stack.Clear();
+                }
             }
         }
 	}

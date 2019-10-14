@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using NetForth.WordInterpreters;
 using static NetForth.DataStack;
+using static NetForth.Evaluable;
 
 // ReSharper disable InconsistentNaming
 
@@ -15,131 +16,127 @@ namespace NetForth
         {
             var rootPrimitives = new Dictionary<string, Evaluable>()
             {
-                {"dup", new Primitive(dup, "dup")},
-                {"+", new Primitive(plus, "+")},
-                {"-", new Primitive(minus, "-")},
-				{"*", new Primitive(times, "*")},
-				{"/", new Primitive(divide, "/")},
-                {".", new Primitive(dot, ".")},
-                {".s", new Primitive(dotS, ".s")},
-                {"?dup", new Primitive(qDup, "?dup")},
-                {"drop", new Primitive(drop, "drop")},
-                {"swap", new Primitive(swap, "swap")},
-                {"over", new Primitive(over, "over")},
-				{"nip", new Primitive(nip, "nip")},
-                {"tuck", new Primitive(tuck, "tuck")},
-                {"rot", new Primitive(rot, "rot")},
-				{"-rot", new Primitive(minusRot, "-rot")},
-                {"pick", new Primitive(pick, "pick")},
-                {"2dup", new Primitive(dup2, "2dup")},
-                {"2drop", new Primitive(drop2, "2drop")},
-                {"2swap", new Primitive(swap2, "2swap")},
-                {"2over", new Primitive(over2, "2over")},
-                {"um*", new Primitive(umStar, "um*")},
-                {"*/", new Primitive(timesDiv, "*/")},
-                {"mod", new Primitive(mod, "mod")},
-                {"um/mod", new Primitive(umMod, "um/mod")},
-                {"negate", new Primitive(negate, "negate")},
-                {"abs", new Primitive(abs, "abs")},
-                {"min", new Primitive(min, "min")},
-                {"max", new Primitive(max, "max")},
-                {"\\", new Primitive(lineComment, "\\")},
-                {"(", new Primitive(mlComment, "(", true)},
-                {":", new Primitive(define, ":") },
-                {"<", new Primitive(lt, "<") },
-                {">", new Primitive(gt, ">") },
-                {"<=", new Primitive(leq, "<=") },
-                {">=", new Primitive(geq, ">=") },
-                {"u<", new Primitive(ult, "u<") },
-                {"u>", new Primitive(ugt, "u>") },
-                {"=", new Primitive(eq, "=") },
-                {"<>", new Primitive(neq, "<>") },
-                {"0=", new Primitive(zeq, "0=") },
-                {"0<>", new Primitive(zneq, "0<>") },
-                {"and", new Primitive(and, "and") },
-                {"or", new Primitive(or, "or") },
-                {"xor", new Primitive(xor, "xor") },
-                {"invert", new Primitive(invert, "invert") },
-                {"lshift", new Primitive(lshift, "lshift") },
-                {"rshift", new Primitive(rshift, "rshift") },
-                {"constant", new Primitive(constant, "constant") },
-                {"variable", new Primitive(variable, "variable") },
-                {"value", new Primitive(value, "value") },
-                {"@", new Primitive(fetch, "@") },
-                {"!", new Primitive(store, "!") },
-                {"c@", new Primitive(cFetch, "c@") },
-                {"c!", new Primitive(cStore, "c!") },
-                {"w@", new Primitive(wFetch, "w@") },
-                {"w!", new Primitive(wStore, "w!") },
-                {"+!", new Primitive(memAdd, "+!") },
-                {"cells", new Primitive(cells, "cells") },
-                {"chars", new Primitive(chars, "chars") },
-                {"if", new Primitive(iffn, true) },
-                {"do", new Primitive(dofn, true) },
-				{"?do", new Primitive(questDofn, true) },
-                {"begin", new Primitive(begin, true) },
-				{"i", new Primitive(i, "i") },
-				{"j", new Primitive(j, "j") },
-				{"leave", new Primitive(leave, "leave") },
-				{"?leave", new Primitive(condLeave, "?leave") },
-                {"exit", new Primitive(exit, "exit") },
-				{"c\"", new Primitive(countedString, true) },
-                {"[char]", new Primitive(fromCChar, true) },
-                {"char", new Primitive(fromChar, "char") },
-                {"create", new Primitive(create, "create") },
-                {",", new Primitive(comma, ",") },
-                {"c,", new Primitive(charComma, "c,") },
-                {"here", new Primitive(here, "here") },
-                {"allot", new Primitive(allot, "allot") },
+                {"dup", new NewPrimitive(dup, "dup")},
+                {"+", new NewPrimitive(plus, "+")},
+                {"-", new NewPrimitive(minus, "-")},
+				{"*", new NewPrimitive(times, "*")},
+				{"/", new NewPrimitive(divide, "/")},
+                {".", new NewPrimitive(dot, ".")},
+                {".s", new NewPrimitive(dotS, ".s")},
+                {"?dup", new NewPrimitive(qDup, "?dup")},
+                {"drop", new NewPrimitive(drop, "drop")},
+                {"swap", new NewPrimitive(swap, "swap")},
+                {"over", new NewPrimitive(over, "over")},
+				{"nip", new NewPrimitive(nip, "nip")},
+                {"tuck", new NewPrimitive(tuck, "tuck")},
+                {"rot", new NewPrimitive(rot, "rot")},
+				{"-rot", new NewPrimitive(minusRot, "-rot")},
+                {"pick", new NewPrimitive(pick, "pick")},
+                {"2dup", new NewPrimitive(dup2, "2dup")},
+                {"2drop", new NewPrimitive(drop2, "2drop")},
+                {"2swap", new NewPrimitive(swap2, "2swap")},
+                {"2over", new NewPrimitive(over2, "2over")},
+                {"um*", new NewPrimitive(umStar, "um*")},
+                {"*/", new NewPrimitive(timesDiv, "*/")},
+                {"mod", new NewPrimitive(mod, "mod")},
+                {"um/mod", new NewPrimitive(umMod, "um/mod")},
+                {"negate", new NewPrimitive(negate, "negate")},
+                {"abs", new NewPrimitive(abs, "abs")},
+                {"min", new NewPrimitive(min, "min")},
+                {"max", new NewPrimitive(max, "max")},
+                {"\\", new LookAhead(lineComment, "\\")},
+                {"(", new LookAhead(mlComment, "(", true)},
+                {":", new LookAhead(define, ":") },
+                {"<", new NewPrimitive(lt, "<") },
+                {">", new NewPrimitive(gt, ">") },
+                {"<=", new NewPrimitive(leq, "<=") },
+                {">=", new NewPrimitive(geq, ">=") },
+                {"u<", new NewPrimitive(ult, "u<") },
+                {"u>", new NewPrimitive(ugt, "u>") },
+                {"=", new NewPrimitive(eq, "=") },
+                {"<>", new NewPrimitive(neq, "<>") },
+                {"0=", new NewPrimitive(zeq, "0=") },
+                {"0<>", new NewPrimitive(zneq, "0<>") },
+                {"and", new NewPrimitive(and, "and") },
+                {"or", new NewPrimitive(or, "or") },
+                {"xor", new NewPrimitive(xor, "xor") },
+                {"invert", new NewPrimitive(invert, "invert") },
+                {"lshift", new NewPrimitive(lshift, "lshift") },
+                {"rshift", new NewPrimitive(rshift, "rshift") },
+                {"constant", new LookAhead(constant, "constant") },
+                {"variable", new LookAhead(variable, "variable") },
+                {"value", new LookAhead(value, "value") },
+                {"@", new NewPrimitive(fetch, "@") },
+                {"!", new NewPrimitive(store, "!") },
+                {"c@", new NewPrimitive(cFetch, "c@") },
+                {"c!", new NewPrimitive(cStore, "c!") },
+                {"w@", new NewPrimitive(wFetch, "w@") },
+                {"w!", new NewPrimitive(wStore, "w!") },
+                {"+!", new NewPrimitive(memAdd, "+!") },
+                {"cells", new NewPrimitive(cells, "cells") },
+                {"chars", new NewPrimitive(chars, "chars") },
+                {"if", new Compilable(iffn) },
+                {"do", new Compilable(dofn) },
+				{"?do", new Compilable(questDofn) },
+                {"begin", new Compilable(begin) },
+				{"i", new NewPrimitive(i, "i") },
+				{"j", new NewPrimitive(j, "j") },
+				{"leave", new ThrowPrimitive(leave, "leave") },
+				{"?leave", new ThrowPrimitive(condLeave, "?leave") },
+                {"exit", new ThrowPrimitive(exit, "exit") },
+				{"c\"", new Compilable(countedString) },
+                {"[char]", new LookAhead(fromChar, "[char]", true) },
+                {"char", new LookAhead(fromChar, "char") },
+                {"create", new LookAhead(create, "create") },
+                {",", new NewPrimitive(comma, ",") },
+                {"c,", new NewPrimitive(charComma, "c,") },
+                {"here", new NewPrimitive(here, "here") },
+                {"allot", new NewPrimitive(allot, "allot") },
 			};
 
-            Vocabulary.AddVocabulary(new Vocabulary(rootPrimitives));
+            Vocabulary.AddVocabulary(new Vocabulary(rootPrimitives, "Root"));
         }
 		#endregion
 
 		#region Strings
-		private static void countedString(WordListBuilder wlb)
+		private static void countedString(Tokenizer tokenizer, WordListBuilder wlb)
 		{
-			Interpreter.InterpreterStack.Push(new FString(wlb));
+			FStringAction.FString(tokenizer, wlb);
 		}
 
-        private static void fromCChar(WordListBuilder wlb)
+		private static void fromChar(Tokenizer tokenizer)
         {
-            Interpreter.InterpreterStack.Push(new CCharWord(wlb));
-        }
-
-        private static void fromChar()
-        {
-            Interpreter.InterpreterStack.Push(new CharWord());
+            var word = tokenizer.NextToken();
+            Stack.Push((int)word[0]);
         }
 		#endregion
 
 		#region Flow of Control
-		private static void iffn(WordListBuilder wlb)
+		private static void iffn(Tokenizer tokenizer, WordListBuilder wlb)
         {
-            Interpreter.InterpreterStack.Push(new IfWord(wlb));
+            IfAction.If(tokenizer, wlb);
         }
 
-        private static void dofn(WordListBuilder wlb)
+        private static void dofn(Tokenizer tokenizer, WordListBuilder wlb)
         {
-            Interpreter.InterpreterStack.Push(new DoWord(wlb));
+            DoAction.Do(tokenizer, wlb, false);
         }
 
-		private static void questDofn(WordListBuilder wlb)
+		private static void questDofn(Tokenizer tokenizer, WordListBuilder wlb)
 		{
-			Interpreter.InterpreterStack.Push(new DoWord(wlb, true));
+            DoAction.Do(tokenizer, wlb, true);
 		}
 
-        private static void begin(WordListBuilder wlb)
+		private static void begin(Tokenizer tokenizer, WordListBuilder wlb)
         {
-            Interpreter.InterpreterStack.Push(new BeginWord(wlb));
+            BeginAction.Begin(tokenizer, wlb);
         }
 
 		private static void i()
 		{
 			try
 			{
-				Stack.Push(DoWord.i());
+				Stack.Push(DoAction.i());
 			}
 			catch (NfException)
 			{
@@ -151,7 +148,7 @@ namespace NetForth
 		{
 			try
 			{
-				Stack.Push(DoWord.j());
+				Stack.Push(DoAction.j());
 			}
 			catch (NfException)
 			{
@@ -159,22 +156,24 @@ namespace NetForth
 			}
 		}
 
-		private static void leave()
+		private static ExitType leave()
         {
-            Session.RunningPrimitive.Leave(Evaluable.ExitType.Leave);
+            return ExitType.Leave;
         }
 
-		private static void condLeave()
+		private static ExitType condLeave()
 		{
 			if (Stack.Pop() != 0)
 			{
-				leave();
+				return leave();
 			}
-		}
 
-        private static void exit()
+            return ExitType.Okay;
+        }
+
+        private static ExitType exit()
         {
-            Session.RunningPrimitive.Leave(Evaluable.ExitType.Exit);
+            return ExitType.Exit;
         }
 		#endregion
 
@@ -201,7 +200,7 @@ namespace NetForth
 
         private static void here()
         {
-            Stack.Push((int)Memory.Here());
+            Stack.Push(Memory.Here());
         }
 
         private static void allot()
@@ -209,22 +208,29 @@ namespace NetForth
             Memory.Allocate(Stack.Pop());
         }
 
-        private static void constant()
+        private static void constant(Tokenizer tokenizer)
         {
-            Interpreter.InterpreterStack.Push(new ConstantWord());
+            var word = tokenizer.NextToken().ToLower();
+            Vocabulary.CurrentVocabulary.AddDefinition(word, new IntPrim(DataStack.Stack.Pop(), word));
         }
 
-        private static void variable()
+		private static void variable(Tokenizer tokenizer)
         {
-            Interpreter.InterpreterStack.Push(new VariableWord());
+            var word = tokenizer.NextToken().ToLower();
+            var address = Memory.Allocate();
+            Memory.StoreInt(address, 0);
+            Vocabulary.CurrentVocabulary.AddDefinition(word, new IntPrim(address, word));
         }
 
-        private static void value()
+		private static void value(Tokenizer tokenizer)
         {
-            Interpreter.InterpreterStack.Push(new ValueWord());
+            var word = tokenizer.NextToken().ToLower();
+            var address = Memory.Allocate();
+            Memory.StoreInt(address, Stack.Pop());
+            Vocabulary.CurrentVocabulary.AddDefinition(word, new IntPrim(address, word));
         }
 
-        private static void fetch()
+		private static void fetch()
         {
             Stack[-1] = Memory.FetchInt(Stack[-1]);
         }
@@ -261,9 +267,11 @@ namespace NetForth
             Memory.StoreInt(address, Memory.FetchInt(address) + delta);
         }
 
-        private static void create()
+        private static void create(Tokenizer tokenizer)
         {
-            Interpreter.InterpreterStack.Push(new CreateWord());
+            var lcWord = tokenizer.NextToken().ToLower();
+            Session.LastDefinedWord = lcWord;
+            Vocabulary.CurrentVocabulary.AddDefinition(lcWord, new IntPrim(Memory.Here(), lcWord));
         }
 		#endregion
 
@@ -365,21 +373,21 @@ namespace NetForth
 		#endregion
 
 		#region Comments
-		private static void lineComment()
+		private static void lineComment(Tokenizer tokenizer)
         {
-            Interpreter.InterpreterStack.Push(new CommentWord(true));
+            while (tokenizer.NextToken(true, true) != "\n") ;
         }
 
-        private static void mlComment()
+        private static void mlComment(Tokenizer tokenizer)
         {
-            Interpreter.InterpreterStack.Push(new CommentWord());
+            while (tokenizer.NextToken() != ")") ;
         }
 		#endregion
 
 		#region Compiling
-        private static void define()
+        private static void define(Tokenizer tokenizer)
         {
-            Interpreter.InterpreterStack.Push(new DefinitionWord());
+            Definition.ParseDefinition(tokenizer);
         }
 		#endregion
 
@@ -471,13 +479,13 @@ namespace NetForth
             Stack[-1] = Math.Min(v, Stack[-1]);
         }
 
-        private static void max()
+		private static void max()
         {
             var v = Stack.Pop();
             Stack[-1] = Math.Max(v, Stack[-1]);
         }
-        
-        private static void abs()
+
+		private static void abs()
         {
             Stack[-1] = Math.Abs(Stack[-1]);
         }

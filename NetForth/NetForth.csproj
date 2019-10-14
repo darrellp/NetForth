@@ -57,20 +57,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RootPrims.cs" />
     <Compile Include="Session.cs" />
+    <Compile Include="Tokenizer.cs" />
     <Compile Include="Vocabulary.cs" />
     <Compile Include="WordInterpreter.cs" />
-    <Compile Include="WordInterpreters\BeginWord.cs" />
-    <Compile Include="WordInterpreters\CharWord.cs" />
-    <Compile Include="WordInterpreters\CommentWord.cs" />
-    <Compile Include="WordInterpreters\ConstantWord.cs" />
-    <Compile Include="WordInterpreters\CreateWord.cs" />
+    <Compile Include="WordInterpreters\BeginAction.cs" />
     <Compile Include="WordInterpreters\DefinitionWord.cs" />
-    <Compile Include="WordInterpreters\DoWord.cs" />
-    <Compile Include="WordInterpreters\EvalWord.cs" />
-    <Compile Include="WordInterpreters\IfWord.cs" />
-    <Compile Include="WordInterpreters\FString.cs" />
-    <Compile Include="WordInterpreters\ValueWord.cs" />
-    <Compile Include="WordInterpreters\VariableWord.cs" />
+    <Compile Include="WordInterpreters\DoAction.cs" />
+    <Compile Include="WordInterpreters\IfAction.cs" />
+    <Compile Include="WordInterpreters\FStringAction.cs" />
     <Compile Include="WordList.cs" />
     <Compile Include="WordListBuilder.cs" />
   </ItemGroup>
