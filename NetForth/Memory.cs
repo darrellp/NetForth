@@ -94,14 +94,7 @@ namespace NetForth
 			}
 		}
 
-		public static string FetchCString(int address)
-		{
-			CheckBlock((IntPtr)address);
-			int length = FetchInt(address);
-			return FetchString(address + sizeof(int), length);
-		}
-
-		internal static void StoreCString(int address, string value)
+        internal static void StoreCString(int address, string value)
 		{
 			CheckBlock((IntPtr)address);
 			StoreInt(address, value.Length);

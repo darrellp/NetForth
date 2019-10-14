@@ -5,7 +5,6 @@
 		private class BeginPrim : Evaluable
 		{
 			private readonly WordList _wlBegin;
-			private bool _leave;
             private readonly bool _isUntil;
             readonly Evaluable _evalCond;
 
@@ -16,14 +15,14 @@
                 _evalCond = evalCond;
             }
 
-            internal override ExitType NewEval()
+            internal override ExitType Eval()
             {
                 while (true)
                 {
                     ExitType et;
                     if (_evalCond != null)
                     {
-                        et = _evalCond.NewEval();
+                        et = _evalCond.Eval();
 
                         if (et != ExitType.Okay)
                         {
@@ -34,7 +33,7 @@
                             return ExitType.Okay;
                         }
                     }
-                    et = _wlBegin.NewEval();
+                    et = _wlBegin.Eval();
                     if (et != ExitType.Okay)
                     {
                         return et;
@@ -54,12 +53,12 @@
             {
                 if (_evalCond != null)
                 {
-                    return $"begin {_evalCond.ToString()} while {_wlBegin.ToString()}";
+                    return $"begin {_evalCond} while {_wlBegin}";
                 }
 
                 var terminator = _isUntil ? "until" : "again";
 
-                return $"begin {_wlBegin.ToString()} {terminator}";
+                return $"begin {_wlBegin} {terminator}";
             }
         }
 
@@ -104,7 +103,7 @@
 			    if (evaluable.IsImmediate)
 			    {
 				    // Only runs at compile time so no need to supply a parent here.
-				    evaluable.NewEval(tokenizer, wlbBegin);
+				    evaluable.Eval(tokenizer, wlbBegin);
 				    continue;
 			    }
                 wlbBegin.Add(evaluable);

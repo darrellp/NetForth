@@ -115,11 +115,11 @@ namespace NetForthTests
             {
                 var intrp = new Interpreter("5 ,");
                 intrp.Interpret();
-                var val = Memory.FetchInt((int) Memory.Here() - sizeof(int));
+                var val = Memory.FetchInt(Memory.Here() - sizeof(int));
                 val.Should().Be(5);
                 intrp = new Interpreter("char P c,");
                 intrp.Interpret();
-                var valc = Memory.FetchChar((int)Memory.Here() - sizeof(char));
+                var valc = Memory.FetchChar(Memory.Here() - sizeof(char));
                 valc.Should().Be('P');
             }
         }
@@ -131,11 +131,11 @@ namespace NetForthTests
             {
                 var intrp = new Interpreter("here");
                 intrp.Interpret();
-                Stack[0].Should().Be((int) Memory.Here());
+                Stack[0].Should().Be(Memory.Here());
                 intrp = new Interpreter("10 allot");
-                var before = (int) Memory.Here();
+                var before = Memory.Here();
                 intrp.Interpret();
-                ((int) Memory.Here()).Should().Be(before + 10);
+                Memory.Here().Should().Be(before + 10);
             }
         }
 

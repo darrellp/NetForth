@@ -59,9 +59,8 @@
     <Compile Include="Session.cs" />
     <Compile Include="Tokenizer.cs" />
     <Compile Include="Vocabulary.cs" />
-    <Compile Include="WordInterpreter.cs" />
     <Compile Include="WordInterpreters\BeginAction.cs" />
-    <Compile Include="WordInterpreters\DefinitionWord.cs" />
+    <Compile Include="WordInterpreters\DefinitionAction.cs" />
     <Compile Include="WordInterpreters\DoAction.cs" />
     <Compile Include="WordInterpreters\IfAction.cs" />
     <Compile Include="WordInterpreters\FStringAction.cs" />

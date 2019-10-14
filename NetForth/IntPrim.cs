@@ -12,16 +12,11 @@
             _name = name;
         }
 
-        internal override ExitType NewEval(Tokenizer tokenizer)
+        internal override ExitType Eval(Tokenizer tokenizer)
         {
 			DataStack.Stack.Push(Value);
             return ExitType.Okay;
         }
-
-		protected virtual void Eval(WordListBuilder _)
-		{
-			DataStack.Stack.Push(Value);
-		}
 
 		public override string ToString()
         {

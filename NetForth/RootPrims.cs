@@ -107,7 +107,7 @@ namespace NetForth
 		private static void fromChar(Tokenizer tokenizer)
         {
             var word = tokenizer.NextToken();
-            Stack.Push((int)word[0]);
+            Stack.Push(word[0]);
         }
 		#endregion
 
@@ -387,7 +387,7 @@ namespace NetForth
 		#region Compiling
         private static void define(Tokenizer tokenizer)
         {
-            Definition.ParseDefinition(tokenizer);
+            DefinitionAction.Definition(tokenizer);
         }
 		#endregion
 

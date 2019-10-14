@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 
 namespace NetForth
@@ -52,6 +51,11 @@ namespace NetForth
         internal static void AddVocabulary(Vocabulary vocabulary)
         {
             _vocabularies.Push(vocabulary);
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }

@@ -9,27 +9,20 @@ namespace NetForth
         protected readonly List<Evaluable> _subwords;
 		// Is this for a defined word or created on the fly by flow of control constructs?
         protected readonly bool _isDefined;
-        protected readonly string _name;
 
-        public WordList(string name, List<Evaluable> subwords, bool isDefined = false)
+        public WordList(List<Evaluable> subwords, bool isDefined = false)
         {
             _subwords = subwords ?? new List<Evaluable>();
             _isDefined = isDefined;
-            _name = name;
         }
 
-        protected virtual void Eval(WordListBuilder wlb)
-        {
-            throw new System.NotImplementedException();
-        }
+        public WordList(string name, params Evaluable[] subwords) : this(subwords.ToList()) { }
 
-        public WordList(string name, params Evaluable[] subwords) : this(name, subwords.ToList()) { }
-
-        internal override ExitType NewEval(Tokenizer _ = null)
+        internal override ExitType Eval(Tokenizer _)
         {
             foreach (var evaluable in _subwords)
             {
-                var et = evaluable.NewEval();
+                var et = evaluable.Eval();
 
 				if (et != ExitType.Okay)
                 {

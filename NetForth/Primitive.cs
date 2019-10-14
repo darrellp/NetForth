@@ -8,7 +8,7 @@ namespace NetForth
     {
         private readonly Action<Tokenizer, WordListBuilder> _compileAction;
 
-        internal override ExitType NewEval(Tokenizer tokenizer, WordListBuilder wlb)
+        internal override ExitType Eval(Tokenizer tokenizer, WordListBuilder wlb)
         {
             _compileAction(tokenizer, wlb);
             return ExitType.Okay;
@@ -35,7 +35,7 @@ namespace NetForth
             Name = name;
         }
 
-        internal override ExitType NewEval(Tokenizer tokenizer, WordListBuilder _)
+        internal override ExitType Eval(Tokenizer tokenizer, WordListBuilder _)
         {
             _action(tokenizer);
             return ExitType.Okay;
@@ -59,7 +59,7 @@ namespace NetForth
             Name = name;
         }
 
-        internal override ExitType NewEval()
+        internal override ExitType Eval()
         {
             return _action();
         }
@@ -86,54 +86,15 @@ namespace NetForth
 			IsImmediate = isImmediate;
 		}
 
-        internal override ExitType NewEval(Tokenizer tokenizer)
+        internal override ExitType Eval(Tokenizer tokenizer)
         {
             _action();
             return ExitType.Okay;
         }
 
-		internal override ExitType NewEval()
+		internal override ExitType Eval()
         {
             return _action();
-        }
-
-        public override string ToString()
-        {
-            return Name;
-        }
-    }
-
-	internal class Primitive : Evaluable
-    {
-        private readonly Func<ExitType> _action;
-        private readonly Action<WordListBuilder> _wordListAction;
-        internal string Name { get; }
-
-        internal Primitive(Func<ExitType> action, string name, bool isImmediate = false)
-        {
-            _action = action;
-            IsImmediate = isImmediate;
-            Name = name;
-        }
-
-        internal Primitive(Action<WordListBuilder> action, bool isImmediate = false)
-        {
-            _wordListAction = action;
-            IsImmediate = isImmediate;
-        }
-
-        protected virtual void Eval(WordListBuilder wlb)
-        {
-            if (_action != null)
-            {
-                Session.RunningPrimitive = this;
-                _action();
-                Session.RunningPrimitive = null;
-            }
-			else
-			{
-                 _wordListAction(wlb);
-            }
         }
 
         public override string ToString()

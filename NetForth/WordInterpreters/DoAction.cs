@@ -24,7 +24,7 @@ namespace NetForth.WordInterpreters
                 }
 
                 sb.Append("do ");
-                sb.Append(_wlDo.ToString());
+                sb.Append(_wlDo);
                 sb.Append(" ");
 
                 if (_plusLoop)
@@ -43,12 +43,7 @@ namespace NetForth.WordInterpreters
 				_isQuestDo = isQuestDo;
 			}
 
-            protected virtual void Eval(WordListBuilder wlb)
-            {
-                throw new System.NotImplementedException();
-            }
-
-            internal override ExitType NewEval(Tokenizer tokenizer, WordListBuilder _)
+            internal override ExitType Eval(Tokenizer tokenizer, WordListBuilder _)
             {
                 _iLoop = LoopIndices.Count;
                 ExitType et;
@@ -66,7 +61,7 @@ namespace NetForth.WordInterpreters
                 {
                     do
                     {
-                        et = _wlDo.NewEval();
+                        et = _wlDo.Eval();
                         if (et != ExitType.Okay)
                         {
                             return et == ExitType.Leave ? ExitType.Okay : et;
@@ -86,7 +81,7 @@ namespace NetForth.WordInterpreters
                 {
                     do
                     {
-                        et = _wlDo.NewEval();
+                        et = _wlDo.Eval();
                         if (et != ExitType.Okay)
                         {
                             return et == ExitType.Leave ? ExitType.Okay : et;
@@ -137,7 +132,7 @@ namespace NetForth.WordInterpreters
 
                 if (evaluable.IsImmediate)
                 {
-					evaluable.NewEval(tokenizer, _wlbDo);
+					evaluable.Eval(tokenizer, _wlbDo);
                     continue;
                 }
 

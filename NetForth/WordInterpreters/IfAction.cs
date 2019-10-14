@@ -16,11 +16,11 @@ namespace NetForth.WordInterpreters
                 _wlElse = wlElse;
             }
 
-            internal override ExitType NewEval(Tokenizer _)
+            internal override ExitType Eval(Tokenizer _)
             {
                 if (Stack.Pop() != 0)
                 {
-                    var retThen = _wlThen.NewEval();
+                    var retThen = _wlThen.Eval();
 
 					if (retThen != ExitType.Okay)
                     {
@@ -31,7 +31,7 @@ namespace NetForth.WordInterpreters
                 {
                     if (_wlElse != null)
                     {
-                        var retElse = _wlElse.NewEval();
+                        var retElse = _wlElse.Eval();
 
                         if (retElse != ExitType.Okay)
                         {
@@ -43,19 +43,15 @@ namespace NetForth.WordInterpreters
                 return ExitType.Okay;
             }
 
-            protected virtual void Eval(WordListBuilder wlb)
-            {
-            }
-
             public override string ToString()
             {
                 var sb = new StringBuilder();
                 sb.Append("if ");
                 if (_wlElse != null)
                 {
-                    sb.Append(_wlElse.ToString() + " else ");
+                    sb.Append(_wlElse + " else ");
                 }
-                sb.Append(_wlThen.ToString() + " then");
+                sb.Append(_wlThen + " then");
                 return sb.ToString();
             }
         }
@@ -63,7 +59,7 @@ namespace NetForth.WordInterpreters
         internal static void If(Tokenizer tokenizer, WordListBuilder wlbParent)
         {
             var wlbThenClause = new WordListBuilder();
-            var wlbElseClause = new WordListBuilder();
+            var wlbElseClause = (WordListBuilder)null;
             while (true)
             {
                 var word = tokenizer.NextToken().ToLower();
@@ -90,7 +86,7 @@ namespace NetForth.WordInterpreters
 
                 if (evaluable.IsImmediate)
                 {
-                    evaluable.NewEval(tokenizer, wlbThenClause);
+                    evaluable.Eval(tokenizer, wlbThenClause);
                     continue;
                 }
 

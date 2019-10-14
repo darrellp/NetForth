@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-
-namespace NetForth.WordInterpreters
+﻿namespace NetForth.WordInterpreters
 {
-    internal static class Definition
+    internal static class DefinitionAction
     {
         private class DoesWord : Evaluable
         {
@@ -14,23 +12,9 @@ namespace NetForth.WordInterpreters
                 _compile = compile;
                 _run = run;
             }
-
-            protected virtual void Eval(WordListBuilder wlb)
-            {
-                Session.LastDefinedWord = null;
-                if (Session.LastDefinedWord == null)
-                {
-                    return;
-                }
-
-                var oldDefinition = Vocabulary.Lookup(Session.LastDefinedWord);
-                var newDefinition = new WordList(Session.LastDefinedWord,
-                    new List<Evaluable>() { oldDefinition, _run }, true);
-                Vocabulary.CurrentVocabulary.AddDefinition(Session.LastDefinedWord, newDefinition);
-            }
         }
 
-        internal static void ParseDefinition(Tokenizer tokenizer)
+        internal static void Definition(Tokenizer tokenizer)
         {
             var wlb = new WordListBuilder();
             string currentDefWord = tokenizer.NextToken().ToLower();
@@ -73,7 +57,7 @@ namespace NetForth.WordInterpreters
 
                 if (evaluable.IsImmediate)
                 {
-                    evaluable.NewEval(tokenizer, wlb);
+                    evaluable.Eval(tokenizer, wlb);
                     continue;
                 }
 

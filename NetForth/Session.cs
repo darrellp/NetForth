@@ -7,8 +7,6 @@ namespace NetForth
     {
         internal static IntPtr Memory;
         internal static int CbMemory;
-        internal static Primitive RunningPrimitive;
-        internal static LookAhead RunningLookAhead;
         internal static int FreeOffset;
         internal static string LastDefinedWord;
 

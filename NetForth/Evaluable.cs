@@ -16,17 +16,17 @@
 		#endregion
 
 		#region Evaluation
-		internal virtual ExitType NewEval()
+		internal virtual ExitType Eval()
         {
-            return NewEval(null);
+            return Eval(null);
         }
 
-        internal virtual ExitType NewEval(Tokenizer tokenizer)
+        internal virtual ExitType Eval(Tokenizer tokenizer)
         {
-            return NewEval(tokenizer, null);
+            return Eval(tokenizer, null);
         }
 
-        internal virtual ExitType NewEval(Tokenizer tokenizer, WordListBuilder wlb)
+        internal virtual ExitType Eval(Tokenizer tokenizer, WordListBuilder wlb)
         {
             return ExitType.Okay;
         }

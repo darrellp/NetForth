@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using NetForth.WordInterpreters;
+﻿using System.IO;
 
 namespace NetForth
 {
@@ -8,7 +6,6 @@ namespace NetForth
     {
         //internal static readonly Stack<WordInterpreter> InterpreterStack = new Stack<WordInterpreter>();
 
-        private readonly TextReader _sr;
         private readonly Tokenizer _tokenizer;
 
 	    public Interpreter(TextReader sr)
@@ -17,8 +14,8 @@ namespace NetForth
             {
                 throw new NfException("Interpreting without a valid session");
             }
-            _sr = sr;
-            _tokenizer = new Tokenizer(_sr);
+
+            _tokenizer = new Tokenizer(sr);
 	    }
 
         public Interpreter(string str) : this (new StringReader(str)) { }
@@ -41,7 +38,7 @@ namespace NetForth
                     throw new NfException($"Couldn't locate word {word}");
                 }
 
-                var ret = evaluable.NewEval(_tokenizer);
+                var ret = evaluable.Eval(_tokenizer);
 
 				if (ret == Evaluable.ExitType.Exit)
                 {

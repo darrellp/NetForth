@@ -13,7 +13,7 @@ namespace NetForth
 
         internal WordList Realize(bool isDefined = false, string name = null)
         {
-			return new WordList(name, new List<Evaluable>(_words), isDefined);
+			return new WordList(new List<Evaluable>(_words), isDefined);
         }
 
         public void Clear()
