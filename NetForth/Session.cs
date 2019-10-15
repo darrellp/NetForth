@@ -9,6 +9,7 @@ namespace NetForth
         internal static int CbMemory;
         internal static int FreeOffset;
         internal static string LastDefinedWord;
+        internal static ForthStack<int> ReturnStack;
 
 		public Session(int cbMemory = 5000)
         {
@@ -16,6 +17,7 @@ namespace NetForth
             Memory = Marshal.AllocHGlobal(CbMemory);
             FreeOffset = 0;
             Vocabulary.Init();
+            ReturnStack = new ForthStack<int>();
         }
 
         private void ReleaseUnmanagedResources()

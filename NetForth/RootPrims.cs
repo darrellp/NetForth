@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NetForth.WordInterpreters;
 using static NetForth.DataStack;
 using static NetForth.Evaluable;
+using static NetForth.Session;
 
 // ReSharper disable InconsistentNaming
 
@@ -92,6 +93,12 @@ namespace NetForth
                 {"c,", new NewPrimitive(charComma, "c,") },
                 {"here", new NewPrimitive(here, "here") },
                 {"allot", new NewPrimitive(allot, "allot") },
+                {">r", new NewPrimitive(ontoR, ">r") },
+                {"r>", new NewPrimitive(fromR, "r>") },
+                {"r@", new NewPrimitive(copyR, "r@") },
+                {"2>r", new NewPrimitive(ontoR2, "2>r") },
+                {"2r>", new NewPrimitive(fromR2, "2r>") },
+                {"2r@", new NewPrimitive(copyR2, "2r@") },
 			};
 
             Vocabulary.AddVocabulary(new Vocabulary(rootPrimitives, "Root"));
@@ -108,6 +115,53 @@ namespace NetForth
         {
             var word = tokenizer.NextToken();
             Stack.Push(word[0]);
+        }
+		#endregion
+
+		#region Return Stack
+        // The return stack being a part of the actual call stack doesn't make a
+        // lot of sense in .Net so it's just a second stack, indistinguishable in all
+        // but usage from the Data stack.
+
+        // >r
+        private static void ontoR()
+        {
+            ReturnStack.Push(Stack.Pop());
+        }
+
+        // r>
+        private static void fromR()
+        {
+            Stack.Push(ReturnStack.Pop());
+        }
+
+        // r@
+        private static void copyR()
+        {
+            Stack.Push(ReturnStack.Peek());
+        }
+
+        // 2>r
+        private static void ontoR2()
+        {
+            var top = Stack.Pop();
+            ReturnStack.Push(Stack.Pop());
+            ReturnStack.Push(top);
+        }
+
+        // 2r>
+        private static void fromR2()
+        {
+            var top = ReturnStack.Pop();
+            Stack.Push(ReturnStack.Pop());
+            Stack.Push(top);
+        }
+
+        // 2r@
+        private static void copyR2()
+        {
+            Stack.Push(ReturnStack[-2]);
+            Stack.Push(ReturnStack[-1]);
         }
 		#endregion
 
