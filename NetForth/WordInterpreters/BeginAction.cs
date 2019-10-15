@@ -15,7 +15,7 @@
                 _evalCond = evalCond;
             }
 
-            internal override ExitType Eval(Tokenizer _)
+            internal override ExitType Eval(Tokenizer _, WordListBuilder wlb = null)
             {
                 while (true)
                 {

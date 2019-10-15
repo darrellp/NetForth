@@ -18,7 +18,7 @@ namespace NetForth
 
         public WordList(string name, params Evaluable[] subwords) : this(subwords.ToList()) { }
 
-        internal override ExitType Eval(Tokenizer tokenizer = null)
+        internal override ExitType Eval(Tokenizer tokenizer = null, WordListBuilder wlb = null)
         {
             foreach (var evaluable in _subwords)
             {

@@ -16,7 +16,7 @@ namespace NetForth.WordInterpreters
                 _wlElse = wlElse;
             }
 
-            internal override ExitType Eval(Tokenizer _)
+            internal override ExitType Eval(Tokenizer _, WordListBuilder wlb = null)
             {
                 if (Stack.Pop() != 0)
                 {

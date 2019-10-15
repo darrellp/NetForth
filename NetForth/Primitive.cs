@@ -59,7 +59,7 @@ namespace NetForth
             Name = name;
         }
 
-        internal override ExitType Eval(Tokenizer _)
+        internal override ExitType Eval(Tokenizer _ = null, WordListBuilder wlb = null)
         {
             return _action();
         }
@@ -86,7 +86,7 @@ namespace NetForth
 			IsImmediate = isImmediate;
 		}
 
-        internal override ExitType Eval(Tokenizer tokenizer = null)
+        internal override ExitType Eval(Tokenizer tokenizer = null, WordListBuilder wlb = null)
         {
             _action();
             return ExitType.Okay;
