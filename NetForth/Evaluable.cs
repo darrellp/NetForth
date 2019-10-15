@@ -16,6 +16,7 @@
 		#endregion
 
 		#region Evaluation
+        // TODO: Consider making tokenizer and WordListBuilder static and taking them out as parameters in Eval for performance
         internal virtual ExitType Eval(Tokenizer tokenizer = null, WordListBuilder wlb = null)
         {
             return ExitType.Okay;

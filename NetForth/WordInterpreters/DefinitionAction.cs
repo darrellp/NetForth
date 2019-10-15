@@ -1,4 +1,6 @@
-﻿namespace NetForth.WordInterpreters
+﻿using System.Collections.Generic;
+
+namespace NetForth.WordInterpreters
 {
     internal static class DefinitionAction
     {
@@ -12,7 +14,26 @@
                 _compile = compile;
                 _run = run;
             }
-        }
+
+            internal override ExitType Eval(Tokenizer tokenizer, WordListBuilder wlb)
+            {
+                Session.LastDefinedWord = null;
+                _compile.Eval(tokenizer, wlb);
+                if (Session.LastDefinedWord != null)
+                {
+                    var intPrim = Vocabulary.Lookup(Session.LastDefinedWord) as IntPrim;
+                    if (intPrim == null)
+                    {
+                        throw new NfException("LastDefinedWord was not defined as an IntPrim");
+                    }
+
+                    List<Evaluable> newDefWords = new List<Evaluable>() {intPrim, _run};
+                    Vocabulary.CurrentVocabulary.AddDefinition(Session.LastDefinedWord, new WordList(newDefWords));
+                    Session.LastDefinedWord = null;
+                }
+                return ExitType.Okay;
+            }
+		}
 
         internal static void Definition(Tokenizer tokenizer)
         {
