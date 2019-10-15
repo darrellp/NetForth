@@ -59,7 +59,7 @@ namespace NetForth
             Name = name;
         }
 
-        internal override ExitType Eval()
+        internal override ExitType Eval(Tokenizer _)
         {
             return _action();
         }
@@ -86,16 +86,16 @@ namespace NetForth
 			IsImmediate = isImmediate;
 		}
 
-        internal override ExitType Eval(Tokenizer tokenizer)
+        internal override ExitType Eval(Tokenizer tokenizer = null)
         {
             _action();
             return ExitType.Okay;
         }
 
-		internal override ExitType Eval()
-        {
-            return _action();
-        }
+		//internal override ExitType Eval()
+  //      {
+  //          return _action();
+  //      }
 
         public override string ToString()
         {

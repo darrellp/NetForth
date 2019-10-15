@@ -12,7 +12,7 @@
             _name = name;
         }
 
-        internal override ExitType Eval(Tokenizer tokenizer)
+        internal override ExitType Eval(Tokenizer tokenizer = null)
         {
 			DataStack.Stack.Push(Value);
             return ExitType.Okay;

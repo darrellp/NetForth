@@ -7,7 +7,7 @@ namespace NetForth
     internal class WordList : Evaluable
     {
         protected readonly List<Evaluable> _subwords;
-		// Is this for a defined word or created on the fly by flow of control constructs?
+		// To distinguish between a defined word and one created on the fly by flow of control constructs
         protected readonly bool _isDefined;
 
         public WordList(List<Evaluable> subwords, bool isDefined = false)
@@ -18,11 +18,12 @@ namespace NetForth
 
         public WordList(string name, params Evaluable[] subwords) : this(subwords.ToList()) { }
 
-        internal override ExitType Eval(Tokenizer _)
+        internal override ExitType Eval(Tokenizer tokenizer = null)
         {
             foreach (var evaluable in _subwords)
             {
-                var et = evaluable.Eval();
+                //var et = evaluable.Eval(tokenizer);
+                var et = evaluable.Eval(tokenizer);
 
 				if (et != ExitType.Okay)
                 {

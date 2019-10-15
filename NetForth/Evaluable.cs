@@ -16,12 +16,12 @@
 		#endregion
 
 		#region Evaluation
-		internal virtual ExitType Eval()
-        {
-            return Eval(null);
-        }
+		//internal virtual ExitType Eval()
+  //      {
+  //          return Eval(null);
+  //      }
 
-        internal virtual ExitType Eval(Tokenizer tokenizer)
+        internal virtual ExitType Eval(Tokenizer tokenizer = null)
         {
             return Eval(tokenizer, null);
         }

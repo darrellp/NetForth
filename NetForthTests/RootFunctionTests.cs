@@ -83,11 +83,11 @@ namespace NetForthTests
 		public void TestCountedString()
 		{
             // Length
-			//NewTestScript(": dotest C\" Hello World!\" ; dotest @", 12);
+			TestScript(": dotest C\" Hello World!\" ; dotest @", 12);
 			// First char ("H")
             TestScript(": dotest C\" Hello World!\" ; dotest 1 cells + c@", 72);
 			// Last char ("!")
-            //NewTestScript(": dotest C\" Hello World!\" ; dotest 1 cells 11 chars + + c@", 33);
+            TestScript(": dotest C\" Hello World!\" ; dotest 1 cells 11 chars + + c@", 33);
 		}
 
         [TestMethod]
@@ -102,13 +102,17 @@ namespace NetForthTests
         {
             using (var fsession = new Session())
             {
-                var intrp = new Interpreter("create thisSpot thisSpot");
+				var intrp = new Interpreter("create thisSpot thisSpot");
+				intrp.Interpret();
+				Stack[0].Should().Be((int)Session.Memory);
+				intrp = new Interpreter(": dotest create ; dotest doggy doggy");
                 intrp.Interpret();
-                Stack[0].Should().Be((int) Session.Memory);
+                Stack[0].Should().Be((int)Session.Memory);
             }
-        }
 
-        [TestMethod]
+		}
+
+		[TestMethod]
         public void TestComma()
         {
             using (var unused = new Session())
