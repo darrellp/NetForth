@@ -1,4 +1,6 @@
-﻿namespace NetForth.WordInterpreters
+﻿using static NetForth.Session;
+
+namespace NetForth.WordInterpreters
 {
     internal static class BeginAction
 	{
@@ -28,7 +30,7 @@
                         {
                             return et;
                         }
-                        if (DataStack.Stack.Pop() == 0)
+                        if (Stack.Pop() == 0)
                         {
                             return ExitType.Okay;
                         }
@@ -41,7 +43,7 @@
 
 					if (_isUntil)
                     {
-                        if (DataStack.Stack.Pop() != 0)
+                        if (Stack.Pop() != 0)
                         {
                             return ExitType.Okay;
                         }

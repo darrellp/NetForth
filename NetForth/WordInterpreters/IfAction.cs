@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using static NetForth.DataStack;
+using static NetForth.Session;
 
 namespace NetForth.WordInterpreters
 {

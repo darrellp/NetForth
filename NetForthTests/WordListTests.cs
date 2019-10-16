@@ -33,8 +33,8 @@ namespace NetForthTests
             // Should be 20 + 2 * 10 = 40.
             var def = new WordList("", intPrim20, intPrim10, dup, plus, plus);
             def.Eval();
-            var val = DataStack.Stack.Pop();
-            DataStack.Stack.Should().BeEmpty();
+            var val = Session.Stack.Pop();
+            Session.Stack.Should().BeEmpty();
             val.Should().Be(40, "because 20 + 2 * 10 = 40");
         }
 	}

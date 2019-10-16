@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using static NetForth.DataStack;
+using static NetForth.Session;
 
 namespace NetForth.WordInterpreters
 {
@@ -69,7 +69,7 @@ namespace NetForth.WordInterpreters
 
                         if (_plusLoop)
                         {
-                            LoopIndices[_iLoop] += DataStack.Stack.Pop();
+                            LoopIndices[_iLoop] += Stack.Pop();
                         }
                         else
                         {
@@ -89,7 +89,7 @@ namespace NetForth.WordInterpreters
 
                         if (_plusLoop)
                         {
-                            LoopIndices[_iLoop] += DataStack.Stack.Pop();
+                            LoopIndices[_iLoop] += Stack.Pop();
                         }
                         else
                         {

@@ -5,7 +5,8 @@ namespace NetForth
 {
 	internal class Session : IDisposable
     {
-        internal static IntPtr Memory;
+        internal static readonly ForthStack<int> Stack = new ForthStack<int>();
+        internal static IntPtr ForthMemory;
         internal static int CbMemory;
         internal static int FreeOffset;
         internal static string LastDefinedWord;
@@ -19,7 +20,7 @@ namespace NetForth
 		public Session(int cbMemory = 5000)
         {
             CbMemory = cbMemory;
-            Memory = Marshal.AllocHGlobal(CbMemory);
+            ForthMemory = Marshal.AllocHGlobal(CbMemory);
             FreeOffset = 0;
             Vocabulary.Init();
             ReturnStack = new ForthStack<int>();
@@ -27,8 +28,8 @@ namespace NetForth
 
         private void ReleaseUnmanagedResources()
         {
-			Marshal.FreeHGlobal(Memory);
-            Memory = (IntPtr) 0;
+			Marshal.FreeHGlobal(ForthMemory);
+            ForthMemory = (IntPtr) 0;
 		}
 
         public void Dispose()

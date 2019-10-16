@@ -14,7 +14,7 @@ namespace NetForth
                 throw new NfException("Out of memory");
             }
 #endif
-			var ret = (int)Session.Memory + Session.FreeOffset;
+			var ret = (int)Session.ForthMemory + Session.FreeOffset;
             Session.FreeOffset += cb;
             return ret;
         }
@@ -112,6 +112,7 @@ namespace NetForth
 			CheckBlock((IntPtr)address);
             switch (Session.StringLengthSize)
             {
+                // ReSharper disable HeuristicUnreachableCode
 				case 1:
                     StoreByte(address, (byte)value.Length);
                     break;
@@ -119,6 +120,7 @@ namespace NetForth
 				case sizeof(int):
                     StoreInt(address, value.Length);
                     break;
+                // ReSharper restore HeuristicUnreachableCode
             }
 			StoreString(address + Session.StringLengthSize, value);
 		}
@@ -126,7 +128,7 @@ namespace NetForth
         private static void  CheckAddress(IntPtr ptr)
         {
             var iPtr = (int) ptr;
-            var iMemory = (int) Session.Memory;
+            var iMemory = (int) Session.ForthMemory;
 
             if (iPtr < iMemory || iPtr >= iMemory + Session.CbMemory)
             {

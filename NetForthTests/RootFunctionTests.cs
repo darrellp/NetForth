@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetForth;
 using FluentAssertions;
-using static NetForth.DataStack;
+using static NetForth.Session;
 
 namespace NetForthTests
 {
@@ -107,10 +107,10 @@ namespace NetForthTests
             {
 				var intrp = new Interpreter("create thisSpot thisSpot");
 				intrp.Interpret();
-				Stack[0].Should().Be((int)Session.Memory);
+				Stack[0].Should().Be((int)Session.ForthMemory);
 				intrp = new Interpreter(": dotest create ; dotest doggy doggy");
                 intrp.Interpret();
-                Stack[0].Should().Be((int)Session.Memory);
+                Stack[0].Should().Be((int)Session.ForthMemory);
             }
 
 		}

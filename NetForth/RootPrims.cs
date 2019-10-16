@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using NetForth.WordInterpreters;
-using static NetForth.DataStack;
 using static NetForth.Evaluable;
 using static NetForth.Session;
 
@@ -275,7 +274,7 @@ namespace NetForth
         private static void constant(Tokenizer tokenizer)
         {
             var word = tokenizer.NextToken().ToLower();
-            Vocabulary.CurrentVocabulary.AddDefinition(word, new IntPrim(DataStack.Stack.Pop(), word));
+            Vocabulary.CurrentVocabulary.AddDefinition(word, new IntPrim(Stack.Pop(), word));
         }
 
 		private static void variable(Tokenizer tokenizer)

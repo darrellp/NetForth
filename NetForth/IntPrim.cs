@@ -1,4 +1,6 @@
-﻿namespace NetForth
+﻿using static NetForth.Session;
+
+namespace NetForth
 {
     internal class IntPrim : Evaluable
     {
@@ -14,7 +16,7 @@
 
         internal override ExitType Eval(Tokenizer tokenizer = null, WordListBuilder wlb = null)
         {
-			DataStack.Stack.Push(Value);
+			Stack.Push(Value);
             return ExitType.Okay;
         }
 

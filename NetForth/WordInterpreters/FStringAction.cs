@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using static NetForth.Session;
 
 namespace NetForth.WordInterpreters
 {
@@ -34,7 +35,7 @@ namespace NetForth.WordInterpreters
                     Memory.StoreCString(pCountedString, text);
                     if (wlbParent == null)
                     {
-                        DataStack.Stack.Push(pCountedString);
+                        Stack.Push(pCountedString);
                     }
                     else
                     {

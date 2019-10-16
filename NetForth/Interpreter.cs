@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using static NetForth.Session;
 
 namespace NetForth
 {
@@ -10,7 +11,7 @@ namespace NetForth
 
 	    public Interpreter(TextReader sr)
         {
-            if ((int)Session.Memory == 0)
+            if ((int)Session.ForthMemory == 0)
             {
                 throw new NfException("Interpreting without a valid session");
             }
@@ -22,7 +23,7 @@ namespace NetForth
 
         public void Interpret()
         {
-            DataStack.Stack.Clear();
+            Stack.Clear();
             while (true)
             {
                 var word = _tokenizer.NextToken(true);
@@ -42,7 +43,7 @@ namespace NetForth
 
 				if (ret == Evaluable.ExitType.Exit)
                 {
-                    DataStack.Stack.Clear();
+                    Stack.Clear();
                     break;
                 }
             }
