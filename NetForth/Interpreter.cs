@@ -5,31 +5,29 @@ namespace NetForth
 {
     public class Interpreter
     {
-		#region Private variables
-		private readonly Tokenizer _tokenizer;
-		#endregion
-
 		#region Constructor
-		public Interpreter(TextReader sr)
+		public Interpreter()
         {
             if ((int)Session.ForthMemory == 0)
             {
                 throw new NfException("Interpreting without a valid session");
             }
-
-            _tokenizer = new Tokenizer(sr);
 	    }
 		#endregion
 
 		#region Interpreter
-		public Interpreter(string str) : this (new StringReader(str)) { }
+        public void Interpret(string str)
+        {
+            Interpret(new StringReader(str));
+        }
 
-        public void Interpret()
+        public void Interpret(TextReader sr)
         {
             Stack.Clear();
+            var tokenizer = new Tokenizer(sr);
             while (true)
             {
-                var word = _tokenizer.NextToken(true);
+                var word = tokenizer.NextToken(true);
                 if (word == null)
                 {
                     return;
@@ -42,7 +40,7 @@ namespace NetForth
                     throw new NfException($"Couldn't locate word {word}");
                 }
 
-                var ret = evaluable.Eval(_tokenizer);
+                var ret = evaluable.Eval(tokenizer);
 
 				if (ret == Evaluable.ExitType.Exit)
                 {

@@ -83,8 +83,8 @@ namespace NetForthTests
 
 		private void Interpret(string script)
         {
-            var intrp = new Interpreter(script);
-            intrp.Interpret();
+            var intrp = new Interpreter();
+            intrp.Interpret(script);
         }
 
         private void Reset()

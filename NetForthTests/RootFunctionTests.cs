@@ -105,11 +105,10 @@ namespace NetForthTests
         {
             using (var fsession = new Session())
             {
-				var intrp = new Interpreter("create thisSpot thisSpot");
-				intrp.Interpret();
+				var intrp = new Interpreter();
+				intrp.Interpret("create thisSpot thisSpot");
 				Stack[0].Should().Be((int)Session.ForthMemory);
-				intrp = new Interpreter(": dotest create ; dotest doggy doggy");
-                intrp.Interpret();
+                intrp.Interpret(": dotest create ; dotest doggy doggy");
                 Stack[0].Should().Be((int)Session.ForthMemory);
             }
 
@@ -120,12 +119,11 @@ namespace NetForthTests
         {
             using (var unused = new Session())
             {
-                var intrp = new Interpreter("5 ,");
-                intrp.Interpret();
+                var intrp = new Interpreter();
+                intrp.Interpret("5 ,");
                 var val = Memory.FetchInt(Memory.Here() - sizeof(int));
                 val.Should().Be(5);
-                intrp = new Interpreter("char P c,");
-                intrp.Interpret();
+                intrp.Interpret("char P c,");
                 var valc = Memory.FetchChar(Memory.Here() - sizeof(char));
                 valc.Should().Be('P');
             }
@@ -136,12 +134,11 @@ namespace NetForthTests
         {
             using (var unused = new Session())
             {
-                var intrp = new Interpreter("here");
-                intrp.Interpret();
+                var intrp = new Interpreter();
+                intrp.Interpret("here");
                 Stack[0].Should().Be(Memory.Here());
-                intrp = new Interpreter("10 allot");
                 var before = Memory.Here();
-                intrp.Interpret();
+                intrp.Interpret("10 allot");
                 Memory.Here().Should().Be(before + 10);
             }
         }
@@ -161,10 +158,10 @@ namespace NetForthTests
         {
             using (var unused = new Session())
             {
-                var intrp = new Interpreter(script);
+                var intrp = new Interpreter();
                 try
                 {
-                    intrp.Interpret();
+                    intrp.Interpret(script);
                     Stack.Should().HaveCount(1);
                     Stack[0].Should().Be(expected);
                 }
