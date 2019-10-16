@@ -106,6 +106,8 @@ namespace NetForth
                 {"strhead", new Primitive(strhead, "strhead") },
                 {"count", new Primitive(count, "count") },
                 {"type", new Primitive(type, "type") },
+                {"'", new LookAhead(tick, "'") },
+                {"execute", new LookAhead(execute, "execute") },
 			};
 
             Vocabulary.AddVocabulary(new Vocabulary(rootPrimitives, "Root"));
@@ -289,6 +291,40 @@ namespace NetForth
             var address = Memory.Allocate();
             Memory.StoreInt(address, Stack.Pop());
             Vocabulary.CurrentVocabulary.AddDefinition(word, new IntPrim(address, word));
+        }
+
+        private static void tick(Tokenizer tokenizer)
+        {
+            var word = tokenizer.NextToken().ToLower();
+            if (MapWordToIndex.ContainsKey(word))
+            {
+                Stack.Push(MapWordToIndex[word]);
+                return;
+            }
+
+            if (NextEvalSlot == EvaluableVals.Length)
+            {
+                throw new NfException("Out of Evalable Slots in tick");
+            }
+
+            var evaluable = Vocabulary.Lookup(word);
+
+            if (evaluable == null)
+            {
+                throw new NfException("Ticking undefined word");
+            }
+            Stack.Push(NextEvalSlot);
+            EvaluableVals[NextEvalSlot++] = evaluable;
+        }
+
+        private static void execute(Tokenizer tokenizer)
+        {
+            var xt = Stack.Pop();
+            if (xt >= NextEvalSlot)
+            {
+                throw new NfException("Invalid execution token");
+            }
+            EvaluableVals[xt].Eval(tokenizer);
         }
 
 		private static void fetch()

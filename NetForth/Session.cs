@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace NetForth
@@ -17,16 +18,22 @@ namespace NetForth
 #else
         public static readonly int StringLengthSize = sizeof(int);
 #endif
+        internal static Evaluable[] EvaluableVals;
+        internal static Dictionary<string, int> MapWordToIndex;
+        internal static int NextEvalSlot;
 		#endregion
 
 		#region Constructor
-		public Session(int cbMemory = 5000)
+		public Session(int cbMemory = 5000, int cEvalSlots = 500)
         {
             CbMemory = cbMemory;
             ForthMemory = Marshal.AllocHGlobal(CbMemory);
             FreeOffset = 0;
             Vocabulary.Init();
             ReturnStack = new ForthStack<int>();
+            EvaluableVals = new Evaluable[cEvalSlots];
+            MapWordToIndex = new Dictionary<string, int>();
+			NextEvalSlot = 0;
         }
 		#endregion
 

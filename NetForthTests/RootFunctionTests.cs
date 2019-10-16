@@ -33,6 +33,13 @@ namespace NetForthTests
 		}
 
         [TestMethod]
+        public void TestTick()
+        {
+            TestScript("' dup", 0);
+            TestScript(": 1+ 1 + ; 10 ' 1+ value del del @ execute", 11);
+        }
+
+        [TestMethod]
         public void TestBegin()
         {
 			TestScript(": dotest 0 begin 1 + dup 5 > if exit then again ; dotest", 6);
