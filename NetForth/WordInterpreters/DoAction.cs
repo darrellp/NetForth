@@ -43,7 +43,7 @@ namespace NetForth.WordInterpreters
 				_isQuestDo = isQuestDo;
 			}
 
-            internal override ExitType Eval(Tokenizer tokenizer, WordListBuilder _)
+            internal override ExitType Eval(Tokenizer tokenizer = null, WordListBuilder _ = null)
             {
                 _iLoop = LoopIndices.Count;
                 ExitType et;

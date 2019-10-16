@@ -17,7 +17,7 @@ namespace NetForth.WordInterpreters
                 _evalCond = evalCond;
             }
 
-            internal override ExitType Eval(Tokenizer _, WordListBuilder wlb = null)
+            internal override ExitType Eval(Tokenizer _ = null, WordListBuilder wlb = null)
             {
                 while (true)
                 {

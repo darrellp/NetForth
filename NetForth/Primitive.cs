@@ -8,7 +8,7 @@ namespace NetForth
     {
         private readonly Action<Tokenizer, WordListBuilder> _compileAction;
 
-        internal override ExitType Eval(Tokenizer tokenizer, WordListBuilder wlb)
+        internal override ExitType Eval(Tokenizer tokenizer = null, WordListBuilder wlb = null)
         {
             _compileAction(tokenizer, wlb);
             return ExitType.Okay;
@@ -35,7 +35,7 @@ namespace NetForth
             Name = name;
         }
 
-        internal override ExitType Eval(Tokenizer tokenizer, WordListBuilder _)
+        internal override ExitType Eval(Tokenizer tokenizer = null, WordListBuilder _ = null)
         {
             _action(tokenizer);
             return ExitType.Okay;

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
 using NetForth.WordInterpreters;
 using static NetForth.Evaluable;
 using static NetForth.Session;
@@ -360,6 +358,7 @@ namespace NetForth
 
 #pragma warning disable 162
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            // ReSharper disable once UnreachableCode
             Stack.Push(StringLengthSize == 1 ? Memory.FetchByte(address) : Memory.FetchInt(address));
 #pragma warning restore 162
         }
@@ -662,7 +661,7 @@ namespace NetForth
             Console.Write(Environment.NewLine);
         }
 
-        static readonly string StringPage = new string(new char[] {(char)12});
+        static readonly string StringPage = new string(new[] {(char)12});
         private static void page()
         {
             Console.Write(StringPage);

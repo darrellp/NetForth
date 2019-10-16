@@ -16,7 +16,7 @@ namespace NetForth
             _isDefined = isDefined;
         }
 
-        public WordList(string name, params Evaluable[] subwords) : this(subwords.ToList()) { }
+        public WordList(string _, params Evaluable[] subwords) : this(subwords.ToList()) { }
 
         internal override ExitType Eval(Tokenizer tokenizer = null, WordListBuilder wlb = null)
         {

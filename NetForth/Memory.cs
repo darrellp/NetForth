@@ -112,15 +112,13 @@ namespace NetForth
 			CheckBlock((IntPtr)address);
             switch (Session.StringLengthSize)
             {
-                // ReSharper disable HeuristicUnreachableCode
-				case 1:
+                case 1:
                     StoreByte(address, (byte)value.Length);
                     break;
 
-				case sizeof(int):
+                case sizeof(int):
                     StoreInt(address, value.Length);
                     break;
-                // ReSharper restore HeuristicUnreachableCode
             }
 			StoreString(address + Session.StringLengthSize, value);
 		}
@@ -143,7 +141,7 @@ namespace NetForth
             CheckAddress(ptr + cb);
         }
 
-        static UnicodeEncoding unicode = new UnicodeEncoding();
+        static readonly UnicodeEncoding unicode = new UnicodeEncoding();
 		internal static string BytesToString(int p, int cch)
         {
             return unicode.GetString((byte*) p, cch * 2);

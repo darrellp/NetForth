@@ -5,11 +5,13 @@ namespace NetForth
 {
     internal class ForthStack<T> : IEnumerable<T>
     {
-        internal List<T> Data { get; } = new List<T>();
-
+		#region Data and Properties
+		internal List<T> Data { get; } = new List<T>();
         internal int Count => Data.Count;
+		#endregion
 
-        internal T Pop()
+		#region Stack Properties
+		internal T Pop()
         {
             var c = Data.Count;
             if (c == 0)
@@ -38,7 +40,14 @@ namespace NetForth
             return Data[c - 1];
         }
 
-        internal T this[int i]
+        internal void Clear()
+        {
+            Data.Clear();
+        }
+		#endregion
+
+		#region Indexing
+		internal T this[int i]
         {
             get
             {
@@ -66,13 +75,10 @@ namespace NetForth
                 Data[i] = value;
             }
         }
+		#endregion
 
-        internal void Clear()
-        {
-            Data.Clear();
-        }
-
-        public IEnumerator<T> GetEnumerator()
+		#region IEnumerable implementation
+		public IEnumerator<T> GetEnumerator()
         {
             return Data.GetEnumerator();
         }
@@ -81,5 +87,6 @@ namespace NetForth
         {
             return Data.GetEnumerator();
         }
-    }
+		#endregion
+	}
 }

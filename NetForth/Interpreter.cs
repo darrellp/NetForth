@@ -5,11 +5,12 @@ namespace NetForth
 {
     public class Interpreter
     {
-        //internal static readonly Stack<WordInterpreter> InterpreterStack = new Stack<WordInterpreter>();
+		#region Private variables
+		private readonly Tokenizer _tokenizer;
+		#endregion
 
-        private readonly Tokenizer _tokenizer;
-
-	    public Interpreter(TextReader sr)
+		#region Constructor
+		public Interpreter(TextReader sr)
         {
             if ((int)Session.ForthMemory == 0)
             {
@@ -18,8 +19,10 @@ namespace NetForth
 
             _tokenizer = new Tokenizer(sr);
 	    }
+		#endregion
 
-        public Interpreter(string str) : this (new StringReader(str)) { }
+		#region Interpreter
+		public Interpreter(string str) : this (new StringReader(str)) { }
 
         public void Interpret()
         {
@@ -59,5 +62,6 @@ namespace NetForth
             }
             return lookup;
         }
-    }
+		#endregion
+	}
 }

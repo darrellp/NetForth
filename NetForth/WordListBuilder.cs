@@ -11,7 +11,7 @@ namespace NetForth
             _words.Add(evaluable);
         }
 
-        internal WordList Realize(bool isDefined = false, string name = null)
+        internal WordList Realize(bool isDefined = false, string _ = null)
         {
 			return new WordList(new List<Evaluable>(_words), isDefined);
         }

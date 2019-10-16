@@ -45,7 +45,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DoesList.cs" />
     <Compile Include="Evaluable.cs" />
     <Compile Include="ForthStack.cs" />
     <Compile Include="Interpreter.cs" />

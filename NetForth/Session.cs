@@ -12,9 +12,9 @@ namespace NetForth
         internal static string LastDefinedWord;
         internal static ForthStack<int> ReturnStack;
 #if SMALLSTRINGS
-        public const int StringLengthSize = 1;
+        public static readonly int StringLengthSize = 1;
 #else
-        public const int StringLengthSize = sizeof(int);
+        public static readonly int StringLengthSize = sizeof(int);
 #endif
 
 		public Session(int cbMemory = 5000)

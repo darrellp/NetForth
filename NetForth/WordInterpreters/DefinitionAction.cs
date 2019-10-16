@@ -6,8 +6,8 @@ namespace NetForth.WordInterpreters
     {
         private class DoesWord : Evaluable
         {
-            private Evaluable _compile;
-            private Evaluable _run;
+            private readonly Evaluable _compile;
+            private readonly Evaluable _run;
 
             internal DoesWord(Evaluable compile, Evaluable run)
             {
@@ -15,7 +15,7 @@ namespace NetForth.WordInterpreters
                 _run = run;
             }
 
-            internal override ExitType Eval(Tokenizer tokenizer, WordListBuilder wlb)
+            internal override ExitType Eval(Tokenizer tokenizer = null, WordListBuilder wlb = null)
             {
                 Session.LastDefinedWord = null;
                 _compile.Eval(tokenizer, wlb);
