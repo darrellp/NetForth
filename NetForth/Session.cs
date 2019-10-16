@@ -5,7 +5,8 @@ namespace NetForth
 {
 	internal class Session : IDisposable
     {
-        internal static readonly ForthStack<int> Stack = new ForthStack<int>();
+		#region Statics
+		internal static readonly ForthStack<int> Stack = new ForthStack<int>();
         internal static IntPtr ForthMemory;
         internal static int CbMemory;
         internal static int FreeOffset;
@@ -16,7 +17,9 @@ namespace NetForth
 #else
         public static readonly int StringLengthSize = sizeof(int);
 #endif
+		#endregion
 
+		#region Constructor
 		public Session(int cbMemory = 5000)
         {
             CbMemory = cbMemory;
@@ -25,8 +28,10 @@ namespace NetForth
             Vocabulary.Init();
             ReturnStack = new ForthStack<int>();
         }
+		#endregion
 
-        private void ReleaseUnmanagedResources()
+		#region IDispose
+		private void ReleaseUnmanagedResources()
         {
 			Marshal.FreeHGlobal(ForthMemory);
             ForthMemory = (IntPtr) 0;
@@ -42,5 +47,6 @@ namespace NetForth
         {
             ReleaseUnmanagedResources();
         }
-    }
+		#endregion
+	}
 }

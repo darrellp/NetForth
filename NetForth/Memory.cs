@@ -6,7 +6,8 @@ namespace NetForth
 {
     internal static unsafe class Memory
     {
-        internal static int Allocate(int cb = 4)
+		#region Memory operations
+		internal static int Allocate(int cb = 4)
         {
 #if MEMORYCHECK
 			if (Session.FreeOffset + cb > Session.CbMemory)
@@ -146,6 +147,6 @@ namespace NetForth
         {
             return unicode.GetString((byte*) p, cch * 2);
         }
-
+		#endregion
 	}
 }

@@ -4,25 +4,35 @@ namespace NetForth
 {
     internal class IntPrim : Evaluable
     {
-        private readonly string _name;
+		#region Private variables
+		private readonly string _name;
+		#endregion
 
-        internal int Value { get; }
+		#region Public properties
+		internal int Value { get; }
+		#endregion
 
-        internal IntPrim(int value, string name = null)
+		#region Constructor
+		internal IntPrim(int value, string name = null)
         {
             Value = value;
             _name = name;
         }
+		#endregion
 
-        internal override ExitType Eval(Tokenizer tokenizer = null, WordListBuilder wlb = null)
+		#region Evaluation
+		internal override ExitType Eval(Tokenizer tokenizer = null, WordListBuilder wlb = null)
         {
 			Stack.Push(Value);
             return ExitType.Okay;
         }
+		#endregion
 
+		#region overrides
 		public override string ToString()
         {
             return _name != null ? $"{_name}({Value})" : Value.ToString();
         }
-    }
+		#endregion
+	}
 }

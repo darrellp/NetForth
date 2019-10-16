@@ -5,13 +5,18 @@ namespace NetForth
 {
 	class Vocabulary
     {
-        private static readonly Stack<Vocabulary> _vocabularies = new Stack<Vocabulary>();
-        internal static Vocabulary CurrentVocabulary => _vocabularies.Peek();
-
+		#region Private variables
+		private static readonly Stack<Vocabulary> _vocabularies = new Stack<Vocabulary>();
         private readonly Dictionary<string, Evaluable> _mapStoEvl;
-        internal string Name { get; }
+		#endregion
 
-        static Vocabulary()
+		#region Public properties
+		internal static Vocabulary CurrentVocabulary => _vocabularies.Peek();
+        internal string Name { get; }
+		#endregion
+
+		#region Constructors
+		static Vocabulary()
         {
             RootPrims.AddRoot();
         }
@@ -24,16 +29,16 @@ namespace NetForth
 
         internal static void Init()
         {
-            //_vocabularies.Clear();
-            //RootPrims.AddRoot();
             for (int i = 0; i < _vocabularies.Count - 1; i++)
             {
                 _vocabularies.Pop();
             }
             AddVocabulary(new Vocabulary(null, "User"));
         }
+		#endregion
 
-        internal static Evaluable Lookup(string word)
+		#region Vocabulary operations
+		internal static Evaluable Lookup(string word)
         {
             var lcWord = word.ToLower();
             return (
@@ -52,10 +57,13 @@ namespace NetForth
         {
             _vocabularies.Push(vocabulary);
         }
+		#endregion
 
-        public override string ToString()
+		#region Overrides
+		public override string ToString()
         {
             return Name;
         }
-    }
+		#endregion
+	}
 }

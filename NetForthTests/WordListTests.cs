@@ -13,8 +13,8 @@ namespace NetForthTests
 		{
             var val1 = 0;
             var val2 = 0;
-            var test1 = new NewPrimitive(() => val1 = 5, "");
-            var test2 = new NewPrimitive(() => val2 = 10, "");
+            var test1 = new Primitive(() => val1 = 5, "");
+            var test2 = new Primitive(() => val2 = 10, "");
             var wordList = new WordList(new List<Evaluable>() { test1, test2});
             wordList.Eval();
             val1.Should().Be(5);

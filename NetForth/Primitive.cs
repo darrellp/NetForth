@@ -2,9 +2,10 @@
 
 namespace NetForth
 {
-    // Primitives that must compile code and place a resulting primitive in their parent's word list
-    // (i.e., but, do and most flow of control words)
-    internal class Compilable : Evaluable
+	#region Compilable
+	// Primitives that must compile code and place a resulting primitive in their parent's word list
+	// (i.e., but, do and most flow of control words)
+	internal class Compilable : Evaluable
     {
         private readonly Action<Tokenizer, WordListBuilder> _compileAction;
 
@@ -20,9 +21,11 @@ namespace NetForth
             IsImmediate = true;
         }
     }
+	#endregion
 
-    // Primitives that must scan ahead at upcoming words in the stream but do not
-    // compile anything into the parent's evolving word list (i.e., Constant, Create, etc.)
+	#region LookAhead
+	// Primitives that must scan ahead at upcoming words in the stream but do not
+	// compile anything into the parent's evolving word list (i.e., Constant, Create, etc.)
 	internal class LookAhead : Evaluable
     {
         private readonly Action<Tokenizer> _action;
@@ -46,8 +49,10 @@ namespace NetForth
             return Name;
         }
     }
+	#endregion
 
-    internal class ThrowPrimitive : Evaluable
+	#region ThrowPrimitive
+	internal class ThrowPrimitive : Evaluable
     {
         private readonly Func<ExitType> _action;
         private string Name { get; }
@@ -69,13 +74,15 @@ namespace NetForth
             return Name;
         }
     }
+	#endregion
 
-    internal class NewPrimitive : Evaluable
+	#region Primitive
+	internal class Primitive : Evaluable
     {
         private readonly Func<ExitType> _action;
         internal string Name { get; }
 
-		internal NewPrimitive(Action action, string name, bool isImmediate = false)
+		internal Primitive(Action action, string name, bool isImmediate = false)
 		{
 			_action = () =>
 			{
@@ -92,14 +99,10 @@ namespace NetForth
             return ExitType.Okay;
         }
 
-		//internal override ExitType Eval()
-  //      {
-  //          return _action();
-  //      }
-
         public override string ToString()
         {
             return Name;
         }
     }
+	#endregion
 }

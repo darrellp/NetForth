@@ -6,19 +6,24 @@ namespace NetForth
 {
     internal class WordList : Evaluable
     {
-        protected readonly List<Evaluable> _subwords;
+		#region Private variables
+		protected readonly List<Evaluable> _subwords;
 		// To distinguish between a defined word and one created on the fly by flow of control constructs
         protected readonly bool _isDefined;
+		#endregion
 
-        public WordList(List<Evaluable> subwords, bool isDefined = false)
+		#region Constructors
+		public WordList(List<Evaluable> subwords, bool isDefined = false)
         {
             _subwords = subwords ?? new List<Evaluable>();
             _isDefined = isDefined;
         }
 
         public WordList(string _, params Evaluable[] subwords) : this(subwords.ToList()) { }
+		#endregion
 
-        internal override ExitType Eval(Tokenizer tokenizer = null, WordListBuilder wlb = null)
+		#region Evaluation
+		internal override ExitType Eval(Tokenizer tokenizer = null, WordListBuilder wlb = null)
         {
             foreach (var evaluable in _subwords)
             {
@@ -37,8 +42,10 @@ namespace NetForth
 
             return ExitType.Okay;
         }
+		#endregion
 
-        public override string ToString()
+		#region Overrides
+		public override string ToString()
         {
             var sb = new StringBuilder();
             var prependBlank = false;
@@ -51,5 +58,6 @@ namespace NetForth
 
             return sb.ToString();
         }
-    }
+		#endregion
+	}
 }

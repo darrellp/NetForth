@@ -4,18 +4,26 @@ namespace NetForth
 {
     internal class Tokenizer
     {
-        internal readonly TextReader Reader;
+		#region Private variables
         private string _currentLine;
         private int _ich;
+		#endregion
 
-        internal Tokenizer(TextReader reader)
+		#region Public properties
+		internal readonly TextReader Reader;
+		#endregion
+
+		#region Constructor
+		internal Tokenizer(TextReader reader)
         {
             Reader = reader;
             // ReSharper disable once PossibleNullReferenceException
             _currentLine = reader.ReadLine().Trim();
         }
+		#endregion
 
-        internal string NextToken(bool allowEof = false, bool returnEol = false)
+		#region Tokenization
+		internal string NextToken(bool allowEof = false, bool returnEol = false)
         {
             if (_ich == _currentLine.Length)
             {
@@ -50,5 +58,6 @@ namespace NetForth
 
             return _currentLine.Substring(ichStart, _ich - ichStart);
         }
+		#endregion
 	}
 }
