@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Text;
 using NetForth.WordInterpreters;
 using static NetForth.DataStack;
 using static NetForth.Evaluable;
@@ -22,8 +24,6 @@ namespace NetForth
                 {"-", new NewPrimitive(minus, "-")},
 				{"*", new NewPrimitive(times, "*")},
 				{"/", new NewPrimitive(divide, "/")},
-                {".", new NewPrimitive(dot, ".")},
-                {".s", new NewPrimitive(dotS, ".s")},
                 {"?dup", new NewPrimitive(qDup, "?dup")},
                 {"drop", new NewPrimitive(drop, "drop")},
                 {"swap", new NewPrimitive(swap, "swap")},
@@ -73,6 +73,8 @@ namespace NetForth
                 {"c!", new NewPrimitive(cStore, "c!") },
                 {"w@", new NewPrimitive(wFetch, "w@") },
                 {"w!", new NewPrimitive(wStore, "w!") },
+                {"b@", new NewPrimitive(bFetch, "b@") },
+                {"b!", new NewPrimitive(bStore, "b!") },
                 {"+!", new NewPrimitive(memAdd, "+!") },
                 {"cells", new NewPrimitive(cells, "cells") },
                 {"chars", new NewPrimitive(chars, "chars") },
@@ -99,6 +101,14 @@ namespace NetForth
                 {"2>r", new NewPrimitive(ontoR2, "2>r") },
                 {"2r>", new NewPrimitive(fromR2, "2r>") },
                 {"2r@", new NewPrimitive(copyR2, "2r@") },
+                {".", new NewPrimitive(dot, ".")},
+                {".s", new NewPrimitive(dotS, ".s")},
+                {"emit", new NewPrimitive(emit, "emit") },
+                {"cr", new NewPrimitive(cr, "cr") },
+                {"page", new NewPrimitive(page, "page") },
+                {"strhead", new NewPrimitive(strhead, "strhead") },
+                {"count", new NewPrimitive(count, "count") },
+                {"type", new NewPrimitive(type, "type") },
 			};
 
             Vocabulary.AddVocabulary(new Vocabulary(rootPrimitives, "Root"));
@@ -304,6 +314,16 @@ namespace NetForth
             Memory.StoreUShort(Stack.Pop(), (ushort)Stack.Pop());
         }
 
+        private static void bFetch()
+        {
+            Stack[-1] = Memory.FetchByte(Stack[-1]);
+        }
+
+        private static void bStore()
+        {
+            Memory.StoreByte(Stack.Pop(), (byte)Stack.Pop());
+        }
+
         private static void wFetch()
         {
             Stack[-1] = Memory.FetchShort(Stack[-1]);
@@ -326,6 +346,23 @@ namespace NetForth
             var lcWord = tokenizer.NextToken().ToLower();
             Session.LastDefinedWord = lcWord;
             Vocabulary.CurrentVocabulary.AddDefinition(lcWord, new IntPrim(Memory.Here(), lcWord));
+        }
+
+        private static void strhead()
+        {
+            Stack.Push(Session.StringLengthSize);
+        }
+
+        private static void count()
+        {
+            var address = Stack.Pop();
+
+            Stack.Push(address + StringLengthSize);
+
+#pragma warning disable 162
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            Stack.Push(StringLengthSize == 1 ? Memory.FetchByte(address) : Memory.FetchInt(address));
+#pragma warning restore 162
         }
 		#endregion
 
@@ -604,7 +641,7 @@ namespace NetForth
 		#region I/O
 		private static void dot()
         {
-            Console.Write($" {Stack.Pop()}");
+            Console.Write(Stack.Pop());
         }
 
         private static void dotS()
@@ -614,6 +651,30 @@ namespace NetForth
             {
                 Console.Write($" {val}");
             }
+        }
+
+        private static void emit()
+        {
+            Console.Write((char)Stack.Pop());
+        }
+
+        private static void cr()
+        {
+            Console.Write(Environment.NewLine);
+        }
+
+        static readonly string StringPage = new string(new char[] {(char)12});
+        private static void page()
+        {
+            Console.Write(StringPage);
+        }
+
+        private static void type()
+        {
+            var len = Stack.Pop();
+            var address = Stack.Pop();
+            string str = Memory.BytesToString(address, len);
+			Console.Write(str);
         }
 		#endregion
 	}

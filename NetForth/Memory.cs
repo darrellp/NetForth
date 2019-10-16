@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text;
 
 namespace NetForth
 {
@@ -43,17 +44,29 @@ namespace NetForth
 
         internal static void StoreChar(int address, char ch)
         {
-            CheckBlock((IntPtr)address, 1);
+            CheckBlock((IntPtr)address, 2);
             *(char*) address = ch;
         }
 
-        internal static char FetchChar(int address)
+		internal static char FetchChar(int address)
         {
-            CheckBlock((IntPtr)address, 1);
+            CheckBlock((IntPtr)address, 2);
             return *(char*)address;
         }
 
-        internal static void StoreShort(int address, short value)
+        internal static void StoreByte(int address, byte b)
+        {
+            CheckBlock((IntPtr)address, 1);
+            *(byte*) address = b;
+        }
+
+        internal static byte FetchByte(int address)
+		{ 
+            CheckBlock((IntPtr)address, 1);
+            return *(byte *)address;
+        }
+
+		internal static void StoreShort(int address, short value)
         {
             CheckBlock((IntPtr)address, 2);
             *(short*)address = value;
@@ -85,7 +98,7 @@ namespace NetForth
 
 		internal static void StoreString(int address, string value)
 		{
-			CheckBlock((IntPtr)address, value.Length + sizeof(int));
+			CheckBlock((IntPtr)address, value.Length);
 			var pch = (char*)address;
 			char[] charArray = value.ToCharArray();
 			for (int i = 0; i < value.Length; i++)
@@ -97,8 +110,17 @@ namespace NetForth
         internal static void StoreCString(int address, string value)
 		{
 			CheckBlock((IntPtr)address);
-			StoreInt(address, value.Length);
-			StoreString(address + sizeof(int), value);
+            switch (Session.StringLengthSize)
+            {
+				case 1:
+                    StoreByte(address, (byte)value.Length);
+                    break;
+
+				case sizeof(int):
+                    StoreInt(address, value.Length);
+                    break;
+            }
+			StoreString(address + Session.StringLengthSize, value);
 		}
 		[Conditional("MEMORYCHECK")]
         private static void  CheckAddress(IntPtr ptr)
@@ -119,6 +141,11 @@ namespace NetForth
             CheckAddress(ptr + cb);
         }
 
+        static UnicodeEncoding unicode = new UnicodeEncoding();
+		internal static string BytesToString(int p, int cch)
+        {
+            return unicode.GetString((byte*) p, cch * 2);
+        }
 
 	}
 }

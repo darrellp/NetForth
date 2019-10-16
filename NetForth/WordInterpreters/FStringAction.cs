@@ -10,6 +10,7 @@ namespace NetForth.WordInterpreters
 		    var prependSpace = false;
 
             var done = false;
+            // TODO: read tokenizer char by char to properly emulate white space
             while (!done)
             {
                 var word = tokenizer.NextToken();
@@ -29,9 +30,16 @@ namespace NetForth.WordInterpreters
                 if (done)
                 {
                     var text = sbText.ToString();
-                    var pCountedString = Memory.Allocate(text.Length + sizeof(int));
+                    var pCountedString = Memory.Allocate(text.Length + Session.StringLengthSize);
                     Memory.StoreCString(pCountedString, text);
-                    wlbParent.Add(new IntPrim(pCountedString));
+                    if (wlbParent == null)
+                    {
+                        DataStack.Stack.Push(pCountedString);
+                    }
+                    else
+                    {
+                        wlbParent.Add(new IntPrim(pCountedString));
+                    }
                 }
             }
 		}

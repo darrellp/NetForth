@@ -81,13 +81,16 @@ namespace NetForthTests
 
 		[TestMethod]
 		public void TestCountedString()
-		{
+        {
+            var stringLengthRetriever = Session.StringLengthSize == 1 ? "b@" : "@";
+            var lengthScript = $": dotest C\" Hello World!\" ; dotest {stringLengthRetriever}";
+
             // Length
-			TestScript(": dotest C\" Hello World!\" ; dotest @", 12);
-			// First char ("H")
-            TestScript(": dotest C\" Hello World!\" ; dotest 1 cells + c@", 72);
-			// Last char ("!")
-            TestScript(": dotest C\" Hello World!\" ; dotest 1 cells 11 chars + + c@", 33);
+            TestScript(lengthScript, 12);
+            // First char ("H")
+            TestScript(": dotest C\" Hello World!\" ; dotest strhead + c@", 72);
+            // Last char ("!")
+            TestScript(": dotest C\" Hello World!\" ; dotest strhead 11 chars + + c@", 33);
 		}
 
         [TestMethod]

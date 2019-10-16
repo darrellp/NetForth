@@ -10,6 +10,11 @@ namespace NetForth
         internal static int FreeOffset;
         internal static string LastDefinedWord;
         internal static ForthStack<int> ReturnStack;
+#if SMALLSTRINGS
+        public const int StringLengthSize = 1;
+#else
+        public const int StringLengthSize = sizeof(int);
+#endif
 
 		public Session(int cbMemory = 5000)
         {
