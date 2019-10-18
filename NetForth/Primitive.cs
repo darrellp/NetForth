@@ -113,7 +113,7 @@ namespace NetForth
     {
         private readonly Type _tRet;
         private readonly Type[] _tParms;
-        private Delegate _del;
+        private readonly Delegate _del;
 
         internal override ExitType Eval(Tokenizer tokenizer = null, WordListBuilder wlb = null)
         {
@@ -130,7 +130,7 @@ namespace NetForth
                 }
             }
 
-            object result = _del.DynamicInvoke(passedParms);
+            var result = _del.DynamicInvoke(passedParms);
             if (_tRet == typeof(int))
             {
                 Stack.Push((int)result);

@@ -9,19 +9,22 @@ namespace NetForth
 	internal class Session : IDisposable
     {
 		#region Statics
-		internal static readonly ForthStack<int> Stack = new ForthStack<int>();
-        internal static IntPtr ForthMemory;
+        public static readonly ForthStack<int> ReturnStack = new ForthStack<int>();
+		public static readonly ForthStack<int> Stack = new ForthStack<int>();
+        public static IntPtr ForthMemory;
+        public static int FreeOffset;
+        public static readonly List<Evaluable> EvaluableVals = new List<Evaluable>();
+        public static readonly List<object> DotNetObjects = new List<object>();
+
         internal static int CbMemory;
-        internal static int FreeOffset;
         internal static string LastDefinedWord;
-        internal static readonly ForthStack<int> ReturnStack = new ForthStack<int>();
         internal static bool IsTesting;
-        internal static readonly List<Evaluable> EvaluableVals = new List<Evaluable>();
-        internal static readonly List<object> DotNetObjects = new List<object>();
 #if SMALLSTRINGS
+        // ReSharper disable once ConvertToConstant.Global
         public static readonly int StringLengthSize = 1;
 #else
-        public static readonly int StringLengthSize = sizeof(int);
+		// ReSharper disable once ConvertToConstant.Global
+		public static readonly int StringLengthSize = sizeof(int);
 #endif
 		#endregion
 
