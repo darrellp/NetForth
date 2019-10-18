@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace NetForth
@@ -13,6 +14,7 @@ namespace NetForth
         internal static int FreeOffset;
         internal static string LastDefinedWord;
         internal static ForthStack<int> ReturnStack;
+        internal static bool IsTesting;
 #if SMALLSTRINGS
         public static readonly int StringLengthSize = 1;
 #else
@@ -34,6 +36,21 @@ namespace NetForth
             EvaluableVals = new Evaluable[cEvalSlots];
             MapWordToIndex = new Dictionary<string, int>();
 			NextEvalSlot = 0;
+
+            StackTrace stackTrace = new StackTrace();           // get call stack
+            StackFrame[] stackFrames = stackTrace.GetFrames();  // get method calls (frames)
+
+            // write call stack method names
+            foreach (StackFrame stackFrame in stackFrames)
+            {
+                var name = stackFrame.GetMethod().Module.Name;
+
+				IsTesting = name.Contains("NetForthTests");
+                if (IsTesting)
+                {
+                    return;
+                }
+            }
         }
 		#endregion
 

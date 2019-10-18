@@ -108,6 +108,7 @@ namespace NetForth
                 {"type", new Primitive(type, "type") },
                 {"'", new LookAhead(tick, "'") },
                 {"execute", new LookAhead(execute, "execute") },
+                {"key", new Primitive(key, "key") },
 			};
 
             Vocabulary.AddVocabulary(new Vocabulary(rootPrimitives, "Root"));
@@ -709,6 +710,27 @@ namespace NetForth
             var address = Stack.Pop();
             string str = Memory.BytesToString(address, len);
 			Console.Write(str);
+        }
+
+        static string _input = "abcdefghijklmnopqrstuvwxyz\n";
+        private static int _ichInput = -1;
+
+        private static void key()
+        {
+            Stack.Push(ReadKey());
+        }
+
+        private static char ReadKey()
+        {
+            if (Session.IsTesting)
+            {
+                _ichInput = (_ichInput + 1) % _input.Length;
+                return _input[_ichInput];
+            }
+            else
+            {
+                return Console.ReadKey(true).KeyChar;
+            }
         }
 		#endregion
 	}
