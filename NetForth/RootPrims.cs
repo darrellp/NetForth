@@ -109,20 +109,20 @@ namespace NetForth
                 {"'", new LookAhead(tick, "'") },
                 {"execute", new LookAhead(execute, "execute") },
                 {"key", new Primitive(key, "key") },
-                {"invoke", new LookAhead(invoke, "invoke") },
+               // {"invoke", new LookAhead(invoke, "invoke") },
 			};
 
             Vocabulary.AddVocabulary(new Vocabulary(rootPrimitives, "Root"));
         }
 		#endregion
 
-		#region .NET Interaction
-        private static void invoke(Tokenizer tokenizer)
-        {
-            var word = tokenizer.NextToken();
-            Session.Invoke(word);
-        }
-		#endregion
+		//#region .NET Interaction
+  //      private static void invoke(Tokenizer tokenizer)
+  //      {
+  //          var word = tokenizer.NextToken();
+  //          Session.Invoke(word);
+  //      }
+		//#endregion
 
 		#region Strings
 		private static void countedString(Tokenizer tokenizer, WordListBuilder wlb)
@@ -306,18 +306,13 @@ namespace NetForth
         private static void tick(Tokenizer tokenizer)
         {
             var word = tokenizer.NextToken().ToLower();
-            if (MapForthWordToIndex.ContainsKey(word))
-            {
-                Stack.Push(MapForthWordToIndex[word]);
-                return;
-            }
-
             var evaluable = Vocabulary.Lookup(word);
 
             if (evaluable == null)
             {
                 throw new NfException("Ticking undefined word");
             }
+
             Stack.Push(EvaluableVals.Count);
             EvaluableVals.Add(evaluable);
         }

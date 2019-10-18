@@ -34,7 +34,7 @@ namespace NetForthTests
 
             Stack.Push(10);
             AddDotNetFn("Add", (Func<int, int, int>)Add);
-            TestScript("10 20 invoke Add", 30);
+            TestScript("10 20 Add", 30);
 		}
 
         [TestMethod]
@@ -52,7 +52,7 @@ namespace NetForthTests
 
             AddDotNetFn("Now", (Func<DateTime>)Now);
             AddDotNetFn("Month", (Func<DateTime, int>)Month);
-            TestScript("invoke Now invoke Month", DateTime.Now.Month);
+            TestScript("Now Month", DateTime.Now.Month);
         }
 
 		private void TestScript(string script, int expected)

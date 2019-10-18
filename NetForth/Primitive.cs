@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using static NetForth.Session;
 
 namespace NetForth
 {
@@ -104,5 +106,50 @@ namespace NetForth
             return Name;
         }
     }
+	#endregion
+
+	#region DotNet
+    internal class DotNetPrimitive : Evaluable
+    {
+        private readonly Type _tRet;
+        private readonly Type[] _tParms;
+        private Delegate _del;
+
+        internal override ExitType Eval(Tokenizer tokenizer = null, WordListBuilder wlb = null)
+        {
+            var passedParms = new object[_tParms.Length];
+            for (var i = _tParms.Length - 1; i >= 0; i--)
+            {
+                if (_tParms[i] == typeof(int))
+                {
+                    passedParms[i] = Stack.Pop();
+                }
+                else
+                {
+                    passedParms[i] = DotNetObjects[Stack.Pop()];
+                }
+            }
+
+            object result = _del.DynamicInvoke(passedParms);
+            if (_tRet == typeof(int))
+            {
+                Stack.Push((int)result);
+            }
+            else if (_tRet != typeof(void))
+            {
+                Stack.Push(SaveManagedObject(result));
+            }
+            return ExitType.Okay;
+        }
+
+        internal DotNetPrimitive(Delegate del)
+        {
+            _del = del;
+            var methodInfo = del.Method;
+
+            _tRet = methodInfo.ReturnType;
+            _tParms = methodInfo.GetParameters().Select(pi => pi.ParameterType).ToArray();
+        }
+	}
 	#endregion
 }
