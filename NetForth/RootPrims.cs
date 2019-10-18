@@ -85,6 +85,8 @@ namespace NetForth
 				{"?leave", new ThrowPrimitive(condLeave, "?leave") },
                 {"exit", new ThrowPrimitive(exit, "exit") },
 				{"c\"", new Compilable(countedString) },
+                // Create a .net string and leave it's token on the stack
+                {"n\"", new Compilable(netString) },
                 {"[char]", new LookAhead(fromChar, "[char]", true) },
                 {"char", new LookAhead(fromChar, "char") },
                 {"create", new LookAhead(create, "create") },
@@ -147,6 +149,11 @@ namespace NetForth
 		{
 			FStringAction.FString(tokenizer, wlb);
 		}
+
+        private static void netString(Tokenizer tokenizer, WordListBuilder wlb)
+        {
+            FStringAction.FString(tokenizer, wlb, true);
+        }
 
 		private static void fromChar(Tokenizer tokenizer)
         {

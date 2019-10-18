@@ -38,6 +38,12 @@ namespace NetForthTests
 		}
 
         [TestMethod]
+        public void TestNString()
+        {
+            TestScript("n\" Darrell\" prop Length", 7);
+        }
+
+        [TestMethod]
         public void TestConstruction()
         {
             DateTime Now()
@@ -64,8 +70,8 @@ namespace NetForthTests
             }
 
             AddDotNetFn("Now", (Func<DateTime>)Now);
-            TestScript("Now prop Day", DateTime.Now.Day);
-            TestThrow("Now prop Da5y", "Non-existent property in prop: Da5y");
+            TestScript("Now dup value sNow prop Day", DateTime.Now.Day);
+            TestThrow("sNow @ prop Da5y", "Non-existent property in prop: Da5y");
         }
 
         private static void TestThrow(string script, string msg = null)

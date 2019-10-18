@@ -5,7 +5,7 @@ namespace NetForth.WordInterpreters
 {
 	static class FStringAction
 	{
-        internal static void FString(Tokenizer tokenizer, WordListBuilder wlbParent)
+        internal static void FString(Tokenizer tokenizer, WordListBuilder wlbParent, bool IsDotNet = false)
         {
             var sbText = new StringBuilder();
 		    var prependSpace = false;
@@ -31,6 +31,20 @@ namespace NetForth.WordInterpreters
                 if (done)
                 {
                     var text = sbText.ToString();
+                    if (IsDotNet)
+                    {
+                        var index = SaveManagedObject(text);
+
+						if (wlbParent == null)
+                        {
+                            Stack.Push(index);
+                        }
+                        else
+                        {
+                            wlbParent.Add(new IntPrim(index));
+                        }
+                        return;
+                    }
                     var pCountedString = Memory.Allocate(text.Length + Session.StringLengthSize);
                     Memory.StoreCString(pCountedString, text);
                     if (wlbParent == null)
