@@ -21,9 +21,12 @@ namespace NetForth
             Interpret(new StringReader(str));
         }
 
-        public void Interpret(TextReader sr)
+        public void Interpret(TextReader sr, bool clearStack = true)
         {
-            Stack.Clear();
+            if (clearStack)
+            {
+                Stack.Clear();
+            }
             var tokenizer = new Tokenizer(sr);
             while (true)
             {

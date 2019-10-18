@@ -69,6 +69,17 @@ namespace NetForth
             DotNetObjects.Add(obj);
             return iRet;
         }
+
+        internal static object GetObject(int index)
+        {
+            if (index > DotNetObjects.Count)
+            {
+                throw new NfException("Out of range in DotNetObjects list");
+            }
+
+            return DotNetObjects[index];
+
+        }
 		#endregion
 
 		#region IDispose

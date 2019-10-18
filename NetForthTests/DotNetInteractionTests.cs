@@ -55,7 +55,37 @@ namespace NetForthTests
             TestScript("Now Month", DateTime.Now.Month);
         }
 
-		private void TestScript(string script, int expected)
+        [TestMethod]
+        public void TestProp()
+        {
+            DateTime Now()
+            {
+                return DateTime.Now;
+            }
+
+            AddDotNetFn("Now", (Func<DateTime>)Now);
+            TestScript("Now prop Day", DateTime.Now.Day);
+            TestThrow("Now prop Da5y", "Non-existent property in prop: Da5y");
+        }
+
+        private static void TestThrow(string script, string msg = null)
+        {
+            var intrp = new Interpreter();
+            Action act = () => intrp.Interpret(script);
+            if (msg == null)
+            {
+                act.Should().Throw<NfException>();
+            }
+			else
+            {
+                act
+                    .Should().Throw<NfException>()
+                    .WithMessage(msg);
+            }
+
+		}
+
+		private static void TestScript(string script, int expected)
         {
             var intrp = new Interpreter();
             try

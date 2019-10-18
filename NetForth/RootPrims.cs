@@ -109,7 +109,8 @@ namespace NetForth
                 {"'", new LookAhead(tick, "'") },
                 {"execute", new LookAhead(execute, "execute") },
                 {"key", new Primitive(key, "key") },
-               // {"invoke", new LookAhead(invoke, "invoke") },
+                {"prop", new LookAhead(prop, "prop") },
+                {"isnull", new Primitive(isnull, "isnull") },
 			};
 
             Vocabulary.AddVocabulary(new Vocabulary(rootPrimitives, "Root"));
@@ -117,11 +118,28 @@ namespace NetForth
 		#endregion
 
 		//#region .NET Interaction
-  //      private static void invoke(Tokenizer tokenizer)
-  //      {
-  //          var word = tokenizer.NextToken();
-  //          Session.Invoke(word);
-  //      }
+		private static void prop(Tokenizer tokenizer)
+		{
+			var word = tokenizer.NextToken();
+            var obj = GetObject(Stack.Pop());
+            var property = obj.GetType().GetProperty(word);
+            if (property == null)
+            {
+                throw new NfException($"Non-existent property in prop: {word}");
+            }
+
+			var result = property.GetValue(obj, null);
+            if (result == null)
+            {
+                Stack.Push(-1);         // Our representation of null
+            }
+            Stack.Push(result is int intValue ? intValue : SaveManagedObject(result));
+        }
+
+        private static void isnull()
+        {
+            Stack[-1] = Stack[-1] == -1 ? -1 : 0;
+        }
 		//#endregion
 
 		#region Strings
