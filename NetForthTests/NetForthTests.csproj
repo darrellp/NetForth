@@ -64,6 +64,7 @@
     <Compile Include="RootFunctionTests.cs" />
     <Compile Include="MemoryTests.cs" />
     <Compile Include="OutputTests.cs" />
+    <Compile Include="DotNetInteractionTests.cs" />
     <Compile Include="WordListTests.cs" />
   </ItemGroup>
   <ItemGroup>
