@@ -10,24 +10,18 @@ namespace NetForthTests
 	[TestClass]
 	public class DotNetInteractionTests
     {
-        private Session session;
+        private Session _session;
 
         [TestInitialize]
         public void TestInit()
         {
-            session = new Session();
+            _session = new Session();
         }
 
         [TestCleanup]
         public void TestCleanup()
         {
-            session.Dispose();
-        }
-
-
-		static int Add(int a, int b)
-        {
-            return a + b;
+            _session.Dispose();
         }
 
         static DateTime Now()
@@ -57,11 +51,12 @@ namespace NetForthTests
         [TestMethod]
         public void TestProp()
         {
-            AddDotNetFn("Now", (Func<DateTime>)Now);
-            TestScript("Now dup value sNow prop Day", DateTime.Now.Day);
+            TestScript("t\" System.DateTime\" sprop Now dup value sNow prop Day", DateTime.Now.Day);
+            TestScript("sNow @ prop Day", DateTime.Now.Day);
             TestThrow("sNow @ prop Da5y", "Non-existent property in prop: Da5y");
         }
 
+        // ReSharper disable once UnusedMember.Global
         public static int Square(int x)
         {
             return x * x;
@@ -71,6 +66,7 @@ namespace NetForthTests
         public void TestCall()
         {
             AddDotNetFn("Now", (Func<DateTime>)Now);
+            // ReSharper disable once SpecifyACultureInStringConversionExplicitly
             TestScript("Now call ToString noprms prop Length", DateTime.Now.ToString().Length);
             TestScript("10 t\" NetForthTests.DotNetInteractionTests, NetForthTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\" scall Square i", 100);
         }

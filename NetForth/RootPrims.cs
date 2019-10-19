@@ -114,6 +114,7 @@ namespace NetForth
                 {"execute", new LookAhead(execute, "execute") },
                 {"key", new Primitive(key, "key") },
                 {"prop", new LookAhead(prop, "prop") },
+                {"sprop", new LookAhead(sprop, "sprop") },
                 {"call", new Compilable(call) },
                 {"scall", new Compilable(scall) },
                 {"isnull", new Primitive(isnull, "isnull") },
@@ -125,11 +126,11 @@ namespace NetForth
 		#endregion
 
 		//#region .NET Interaction
-		private static void prop(Tokenizer tokenizer)
+		private static void propHelper(Tokenizer tokenizer, bool isStatic = false)
 		{
 			var word = tokenizer.NextToken();
             var obj = GetObject(Stack.Pop());
-            var property = obj.GetType().GetProperty(word);
+            var property = isStatic ? ((Type)obj).GetProperty(word) : obj.GetType().GetProperty(word);
             if (property == null)
             {
                 throw new NfException($"Non-existent property in prop: {word}");
@@ -140,7 +141,20 @@ namespace NetForth
             {
                 Stack.Push(-1);         // Our representation of null
             }
-            Stack.Push(result is int intValue ? intValue : SaveManagedObject(result));
+            else
+            {
+                Stack.Push(result is int intValue ? intValue : SaveManagedObject(result));
+            }
+        }
+
+        private static void prop(Tokenizer tokenizer)
+        {
+            propHelper(tokenizer, false);
+        }
+
+        private static void sprop(Tokenizer tokenizer)
+        {
+            propHelper(tokenizer, true);
         }
 
         private static void pushNull()
