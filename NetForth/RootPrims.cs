@@ -87,6 +87,8 @@ namespace NetForth
 				{"c\"", new Compilable(countedString) },
                 // Create a .net string and leave it's token on the stack
                 {"n\"", new Compilable(netString) },
+                // Create a type from the name and leave it's token on the stack
+                {"t\"", new Compilable(netType) },
                 {"[char]", new LookAhead(fromChar, "[char]", true) },
                 {"char", new LookAhead(fromChar, "char") },
                 {"create", new LookAhead(create, "create") },
@@ -112,7 +114,10 @@ namespace NetForth
                 {"execute", new LookAhead(execute, "execute") },
                 {"key", new Primitive(key, "key") },
                 {"prop", new LookAhead(prop, "prop") },
+                {"call", new Compilable(call) },
+                {"scall", new Compilable(scall) },
                 {"isnull", new Primitive(isnull, "isnull") },
+                {"null", new Primitive(pushNull, "null") },
 			};
 
             Vocabulary.AddVocabulary(new Vocabulary(rootPrimitives, "Root"));
@@ -138,9 +143,30 @@ namespace NetForth
             Stack.Push(result is int intValue ? intValue : SaveManagedObject(result));
         }
 
+        private static void pushNull()
+        {
+            Stack.Push(-1);
+        }
+
         private static void isnull()
         {
             Stack[-1] = Stack[-1] == -1 ? -1 : 0;
+        }
+
+        // Top of stack is object acted on, rest of stack are objects, either ints or .net objects for parameters.
+        // Next word is method to call and next word is composed of the letters 'i' and 'o', one letter per
+        // parameter.  The letters work from the first argument to last and indicate whether the
+        // corresponding parameter is a normal integer (i) or a .net object (o).  If there are no parameters
+        // this string should be "none".
+        private static void call(Tokenizer tkn, WordListBuilder wlb)
+        {
+            CallAction.DoCall(tkn, wlb);
+        }
+
+        // Static calls
+        private static void scall(Tokenizer tkn, WordListBuilder wlb)
+        {
+            CallAction.DoCall(tkn, wlb, true);
         }
 		//#endregion
 
@@ -152,7 +178,12 @@ namespace NetForth
 
         private static void netString(Tokenizer tokenizer, WordListBuilder wlb)
         {
-            FStringAction.FString(tokenizer, wlb, true);
+            FStringAction.FString(tokenizer, wlb, StringType.DotNet);
+        }
+
+        private static void netType(Tokenizer tokenizer, WordListBuilder wlb)
+        {
+            FStringAction.FString(tokenizer, wlb, StringType.Type);
         }
 
 		private static void fromChar(Tokenizer tokenizer)

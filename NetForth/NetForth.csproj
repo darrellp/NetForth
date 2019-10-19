@@ -58,6 +58,7 @@
     <Compile Include="Tokenizer.cs" />
     <Compile Include="Vocabulary.cs" />
     <Compile Include="WordInterpreters\BeginAction.cs" />
+    <Compile Include="WordInterpreters\CallAction.cs" />
     <Compile Include="WordInterpreters\DefinitionAction.cs" />
     <Compile Include="WordInterpreters\DoAction.cs" />
     <Compile Include="WordInterpreters\IfAction.cs" />

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
+using NetForth.WordInterpreters;
 using static NetForth.Session;
 
 namespace NetForth
@@ -113,7 +115,8 @@ namespace NetForth
     {
         private readonly Type _tRet;
         private readonly Type[] _tParms;
-        private readonly Delegate _del;
+        private readonly MethodInfo _method;
+        private readonly Object _obj;
 
         internal override ExitType Eval(Tokenizer tokenizer = null, WordListBuilder wlb = null)
         {
@@ -130,26 +133,18 @@ namespace NetForth
                 }
             }
 
-            var result = _del.DynamicInvoke(passedParms);
-            if (_tRet == typeof(int))
-            {
-                Stack.Push((int)result);
-            }
-            else if (_tRet != typeof(void))
-            {
-                Stack.Push(SaveManagedObject(result));
-            }
+            var result = _method.Invoke(_obj, passedParms);
+            CallAction.HandleResult(_tRet, result);
             return ExitType.Okay;
         }
 
-        internal DotNetPrimitive(Delegate del)
+        internal DotNetPrimitive(MethodInfo method)
         {
-            _del = del;
-            var methodInfo = del.Method;
-
-            _tRet = methodInfo.ReturnType;
-            _tParms = methodInfo.GetParameters().Select(pi => pi.ParameterType).ToArray();
+            _method = method;
+            _tRet = _method.ReturnType;
+            _tParms = _method.GetParameters().Select(pi => pi.ParameterType).ToArray();
         }
+		internal DotNetPrimitive(Delegate del) : this (del.Method) { }
 	}
 	#endregion
 }

@@ -1,11 +1,18 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using static NetForth.Session;
 
 namespace NetForth.WordInterpreters
 {
+    enum StringType
+    {
+        Forth,
+        DotNet,
+        Type
+    }
 	static class FStringAction
 	{
-        internal static void FString(Tokenizer tokenizer, WordListBuilder wlbParent, bool IsDotNet = false)
+        internal static void FString(Tokenizer tokenizer, WordListBuilder wlbParent, StringType st = StringType.Forth)
         {
             var sbText = new StringBuilder();
 		    var prependSpace = false;
@@ -21,41 +28,42 @@ namespace NetForth.WordInterpreters
                     done = true;
                     word = word.Substring(0, word.Length - 1);
                 }
+
                 if (prependSpace)
                 {
                     sbText.Append(" ");
                 }
+
                 prependSpace = true;
                 sbText.Append(word);
+            }
 
-                if (done)
-                {
-                    var text = sbText.ToString();
-                    if (IsDotNet)
-                    {
-                        var index = SaveManagedObject(text);
-
-						if (wlbParent == null)
-                        {
-                            Stack.Push(index);
-                        }
-                        else
-                        {
-                            wlbParent.Add(new IntPrim(index));
-                        }
-                        return;
-                    }
+            var text = sbText.ToString();
+            int finalValue = -1;
+            switch (st)
+            {
+				case StringType.Forth:
                     var pCountedString = Memory.Allocate(text.Length + Session.StringLengthSize);
                     Memory.StoreCString(pCountedString, text);
-                    if (wlbParent == null)
-                    {
-                        Stack.Push(pCountedString);
-                    }
-                    else
-                    {
-                        wlbParent.Add(new IntPrim(pCountedString));
-                    }
-                }
+                    finalValue = pCountedString;
+                    break;
+
+				case StringType.DotNet:
+                    var index = SaveManagedObject(text);
+                    finalValue = index;
+                    break;
+
+				case StringType.Type:
+                    finalValue = SaveManagedObject(Type.GetType(text));
+					break;
+			}
+            if (wlbParent == null)
+            {
+                Stack.Push(finalValue);
+            }
+            else
+            {
+                wlbParent.Add(new IntPrim(finalValue));
             }
 		}
 	}

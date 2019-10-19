@@ -24,18 +24,21 @@ namespace NetForthTests
             session.Dispose();
         }
 
-		[TestMethod]
-		public void TestCall()
-		{
-            int Add(int a, int b)
-            {
-                return a + b;
-            }
 
-            Stack.Push(10);
-            AddDotNetFn("Add", (Func<int, int, int>)Add);
-            TestScript("10 20 Add", 30);
-		}
+		static int Add(int a, int b)
+        {
+            return a + b;
+        }
+
+        static DateTime Now()
+        {
+            return DateTime.Now;
+        }
+
+        static int Month(DateTime dt)
+        {
+            return dt.Month;
+        }
 
         [TestMethod]
         public void TestNString()
@@ -46,16 +49,6 @@ namespace NetForthTests
         [TestMethod]
         public void TestConstruction()
         {
-            DateTime Now()
-            {
-                return DateTime.Now;
-            }
-
-            int Month(DateTime dt)
-            {
-                return dt.Month;
-            }
-
             AddDotNetFn("Now", (Func<DateTime>)Now);
             AddDotNetFn("Month", (Func<DateTime, int>)Month);
             TestScript("Now Month", DateTime.Now.Month);
@@ -64,17 +57,25 @@ namespace NetForthTests
         [TestMethod]
         public void TestProp()
         {
-            DateTime Now()
-            {
-                return DateTime.Now;
-            }
-
             AddDotNetFn("Now", (Func<DateTime>)Now);
             TestScript("Now dup value sNow prop Day", DateTime.Now.Day);
             TestThrow("sNow @ prop Da5y", "Non-existent property in prop: Da5y");
         }
 
-        private static void TestThrow(string script, string msg = null)
+        public static int Square(int x)
+        {
+            return x * x;
+        }
+
+        [TestMethod]
+        public void TestCall()
+        {
+            AddDotNetFn("Now", (Func<DateTime>)Now);
+            TestScript("Now call ToString noprms prop Length", DateTime.Now.ToString().Length);
+            TestScript("10 t\" NetForthTests.DotNetInteractionTests, NetForthTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\" scall Square i", 100);
+        }
+
+		private static void TestThrow(string script, string msg = null)
         {
             var intrp = new Interpreter();
             Action act = () => intrp.Interpret(script);

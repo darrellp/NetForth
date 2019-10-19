@@ -72,6 +72,10 @@ namespace NetForth
 
         internal static object GetObject(int index)
         {
+            if (index == -1)
+            {
+                return null;
+            }
             if (index > DotNetObjects.Count)
             {
                 throw new NfException("Out of range in DotNetObjects list");
