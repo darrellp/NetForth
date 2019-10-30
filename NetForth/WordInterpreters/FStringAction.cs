@@ -54,7 +54,12 @@ namespace NetForth.WordInterpreters
                     break;
 
 				case StringType.Type:
-                    finalValue = SaveManagedObject(Type.GetType(text));
+                    var type = Type.GetType(text);
+                    if (type == null)
+                    {
+                        throw new NfException($"Unrecognized .NET type in t\": {text}");
+                    }
+					finalValue = SaveManagedObject(Type.GetType(text));
 					break;
 			}
             if (wlbParent == null)

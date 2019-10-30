@@ -16,11 +16,6 @@ namespace NetForth
 		#endregion
 
 		#region Constructors
-		static Vocabulary()
-        {
-            RootPrims.AddRoot();
-        }
-
         public Vocabulary(Dictionary<string, Evaluable> mapStoEvl = null, string name = "Anonymous")
         {
             _mapStoEvl = mapStoEvl ?? new Dictionary<string, Evaluable>();

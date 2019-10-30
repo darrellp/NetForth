@@ -11,14 +11,24 @@ namespace NetForthTests
 	public class DotNetInteractionTests
     {
         private Session _session;
+        private Interpreter _interpreter;
 
         [TestInitialize]
         public void TestInit()
         {
             _session = new Session();
+            _interpreter = new Interpreter();
+
+            // Define types we use below
+            var script = @"
+t"" System.DateTime"" constant tDatetime
+t"" NetForthTests.DotNetInteractionTests, NetForthTests, Version = 1.0.0.0, Culture = neutral, PublicKeyToken = null"" constant tTests
+t"" System.OutOfMemoryException"" constant tMemoryException";
+			_interpreter.Interpret(script);
         }
 
-        [TestCleanup]
+
+		[TestCleanup]
         public void TestCleanup()
         {
             _session.Dispose();
@@ -51,7 +61,7 @@ namespace NetForthTests
         [TestMethod]
         public void TestProp()
         {
-            TestScript("t\" System.DateTime\" sprop Now dup value sNow prop Day", DateTime.Now.Day);
+            TestScript("tDatetime sprop Now dup value sNow prop Day", DateTime.Now.Day);
             TestScript("sNow @ prop Day", DateTime.Now.Day);
             TestThrow("sNow @ prop Da5y", "Non-existent property in prop: Da5y");
         }
@@ -65,16 +75,31 @@ namespace NetForthTests
         [TestMethod]
         public void TestCall()
         {
-            AddDotNetFn("Now", (Func<DateTime>)Now);
-            // ReSharper disable once SpecifyACultureInStringConversionExplicitly
-            TestScript("Now call ToString noprms prop Length", DateTime.Now.ToString().Length);
-            TestScript("10 t\" NetForthTests.DotNetInteractionTests, NetForthTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\" scall Square i", 100);
+            _interpreter.Interpret("tInt 1 tTests defStat Square fSquare");
+			TestScript("10 fSquare", 100);
+
+            // Don't run this a few milliseconds before midnight on the last day of the month!
+            _interpreter.Interpret("tInt 1 tDatetime defMeth AddMonths am");
+			TestScript("tDatetime sprop Now 1 swap am prop Month", DateTime.Now.Month + 1);
         }
 
-		private static void TestThrow(string script, string msg = null)
+        [TestMethod]
+        public void TestConstructor()
         {
-            var intrp = new Interpreter();
-            Action act = () => intrp.Interpret(script);
+            _interpreter.Interpret("tString 1 tMemoryException defCnst mExcpt");
+            TestScript("n\" Darrell\" mExcpt prop Message prop Length", 7);
+        }
+
+        [TestMethod]
+        public void TestIndexer()
+        {
+            _interpreter.Interpret("tInt 1 tString defIndx strIndexer");
+            TestScript("1 n\" Darrell\" strIndexer", 'a');
+        }
+
+		private void TestThrow(string script, string msg = null)
+        {
+            Action act = () => _interpreter.Interpret(script);
             if (msg == null)
             {
                 act.Should().Throw<NfException>();
@@ -88,12 +113,11 @@ namespace NetForthTests
 
 		}
 
-		private static void TestScript(string script, int expected)
+		private void TestScript(string script, int expected)
         {
-            var intrp = new Interpreter();
             try
             {
-                intrp.Interpret(script);
+                _interpreter.Interpret(script);
                 Stack.Should().HaveCount(1);
                 Stack[0].Should().Be(expected);
             }

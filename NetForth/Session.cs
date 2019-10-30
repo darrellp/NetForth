@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace NetForth
@@ -35,9 +34,11 @@ namespace NetForth
             ForthMemory = Marshal.AllocHGlobal(CbMemory);
             FreeOffset = 0;
             Vocabulary.Init();
-            ReturnStack.Clear();
+
+			ReturnStack.Clear();
             EvaluableVals.Clear();
             DotNetObjects.Clear();
+            RootPrims.AddRoot();
 
             StackTrace stackTrace = new StackTrace();           // get call stack
             StackFrame[] stackFrames = stackTrace.GetFrames();  // get method calls (frames)
@@ -70,7 +71,7 @@ namespace NetForth
             return iRet;
         }
 
-        internal static object GetObject(int index)
+        internal static object GetManagedObject(int index)
         {
             if (index == -1)
             {

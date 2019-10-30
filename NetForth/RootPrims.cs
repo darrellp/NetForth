@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using NetForth.WordInterpreters;
 using static NetForth.Evaluable;
 using static NetForth.Session;
@@ -14,13 +15,30 @@ namespace NetForth
 		#region Setting up root vocabulary
 		internal static void AddRoot()
         {
-            var rootPrimitives = new Dictionary<string, Evaluable>()
+            // Defining some standard .NET types
+            Vocabulary.CurrentVocabulary.AddDefinition("tstring", new IntPrim(SaveManagedObject(typeof(string)), "tstring"));
+            Vocabulary.CurrentVocabulary.AddDefinition("tbyte", new IntPrim(SaveManagedObject(typeof(byte)), "tbyte"));
+            Vocabulary.CurrentVocabulary.AddDefinition("tshort", new IntPrim(SaveManagedObject(typeof(short)), "tshort"));
+            Vocabulary.CurrentVocabulary.AddDefinition("tint", new IntPrim(SaveManagedObject(typeof(int)), "tint"));
+            Vocabulary.CurrentVocabulary.AddDefinition("tlong", new IntPrim(SaveManagedObject(typeof(long)), "long"));
+
+			var rootPrimitives = new Dictionary<string, Evaluable>()
             {
-                {"dup", new Primitive(dup, "dup")},
+                // MATH --------------------------------------------------------
                 {"+", new Primitive(plus, "+")},
                 {"-", new Primitive(minus, "-")},
 				{"*", new Primitive(times, "*")},
 				{"/", new Primitive(divide, "/")},
+                {"um*", new Primitive(umStar, "um*")},
+                {"*/", new Primitive(timesDiv, "*/")},
+                {"mod", new Primitive(mod, "mod")},
+                {"um/mod", new Primitive(umMod, "um/mod")},
+                {"negate", new Primitive(negate, "negate")},
+                {"abs", new Primitive(abs, "abs")},
+                {"min", new Primitive(min, "min")},
+                {"max", new Primitive(max, "max")},
+                // STACK --------------------------------------------------------
+                {"dup", new Primitive(dup, "dup")},
                 {"?dup", new Primitive(qDup, "?dup")},
                 {"drop", new Primitive(drop, "drop")},
                 {"swap", new Primitive(swap, "swap")},
@@ -34,17 +52,10 @@ namespace NetForth
                 {"2drop", new Primitive(drop2, "2drop")},
                 {"2swap", new Primitive(swap2, "2swap")},
                 {"2over", new Primitive(over2, "2over")},
-                {"um*", new Primitive(umStar, "um*")},
-                {"*/", new Primitive(timesDiv, "*/")},
-                {"mod", new Primitive(mod, "mod")},
-                {"um/mod", new Primitive(umMod, "um/mod")},
-                {"negate", new Primitive(negate, "negate")},
-                {"abs", new Primitive(abs, "abs")},
-                {"min", new Primitive(min, "min")},
-                {"max", new Primitive(max, "max")},
+                // COMMENTS ------------------------------------------------------
                 {"\\", new LookAhead(lineComment, "\\")},
                 {"(", new LookAhead(mlComment, "(", true)},
-                {":", new LookAhead(define, ":") },
+                // COMPARISONS ---------------------------------------------------
                 {"<", new Primitive(lt, "<") },
                 {">", new Primitive(gt, ">") },
                 {"<=", new Primitive(leq, "<=") },
@@ -55,15 +66,21 @@ namespace NetForth
                 {"<>", new Primitive(neq, "<>") },
                 {"0=", new Primitive(zeq, "0=") },
                 {"0<>", new Primitive(zneq, "0<>") },
+                // LOGICAL OPERATIONS --------------------------------------------
                 {"and", new Primitive(and, "and") },
                 {"or", new Primitive(or, "or") },
                 {"xor", new Primitive(xor, "xor") },
                 {"invert", new Primitive(invert, "invert") },
                 {"lshift", new Primitive(lshift, "lshift") },
                 {"rshift", new Primitive(rshift, "rshift") },
+                // DEFINING -------------------------------------------------------
+                {":", new LookAhead(define, ":") },
                 {"constant", new LookAhead(constant, "constant") },
                 {"variable", new LookAhead(variable, "variable") },
                 {"value", new LookAhead(value, "value") },
+                {"'", new LookAhead(tick, "'") },
+                {"execute", new LookAhead(execute, "execute") },
+                // MEMORY ---------------------------------------------------------
                 {"@", new Primitive(fetch, "@") },
                 {"!", new Primitive(store, "!") },
                 {"c@", new Primitive(cFetch, "c@") },
@@ -75,6 +92,7 @@ namespace NetForth
                 {"+!", new Primitive(memAdd, "+!") },
                 {"cells", new Primitive(cells, "cells") },
                 {"chars", new Primitive(chars, "chars") },
+                // FLOW OF CONTROL ---------------------------------------------------
                 {"if", new Compilable(iffn) },
                 {"do", new Compilable(dofn) },
 				{"?do", new Compilable(questDofn) },
@@ -84,52 +102,85 @@ namespace NetForth
 				{"leave", new ThrowPrimitive(leave, "leave") },
 				{"?leave", new ThrowPrimitive(condLeave, "?leave") },
                 {"exit", new ThrowPrimitive(exit, "exit") },
+                // STRINGS -------------------------------------------------------------
 				{"c\"", new Compilable(countedString) },
-                // Create a .net string and leave it's token on the stack
-                {"n\"", new Compilable(netString) },
-                // Create a type from the name and leave it's token on the stack
-                {"t\"", new Compilable(netType) },
                 {"[char]", new LookAhead(fromChar, "[char]", true) },
                 {"char", new LookAhead(fromChar, "char") },
+                {"strhead", new Primitive(strhead, "strhead") },
+                {"count", new Primitive(count, "count") },
+                // MEMORY ALLOTMENT -----------------------------------------------------
                 {"create", new LookAhead(create, "create") },
                 {",", new Primitive(comma, ",") },
                 {"c,", new Primitive(charComma, "c,") },
                 {"here", new Primitive(here, "here") },
                 {"allot", new Primitive(allot, "allot") },
+                // RETURN STACK ---------------------------------------------------------
                 {">r", new Primitive(ontoR, ">r") },
                 {"r>", new Primitive(fromR, "r>") },
                 {"r@", new Primitive(copyR, "r@") },
                 {"2>r", new Primitive(ontoR2, "2>r") },
                 {"2r>", new Primitive(fromR2, "2r>") },
                 {"2r@", new Primitive(copyR2, "2r@") },
+                // I/O ------------------------------------------------------------------
                 {".", new Primitive(dot, ".")},
                 {".s", new Primitive(dotS, ".s")},
                 {"emit", new Primitive(emit, "emit") },
                 {"cr", new Primitive(cr, "cr") },
                 {"page", new Primitive(page, "page") },
-                {"strhead", new Primitive(strhead, "strhead") },
-                {"count", new Primitive(count, "count") },
                 {"type", new Primitive(type, "type") },
-                {"'", new LookAhead(tick, "'") },
-                {"execute", new LookAhead(execute, "execute") },
                 {"key", new Primitive(key, "key") },
-                {"prop", new LookAhead(prop, "prop") },
+                // .NET -----------------------------------------------------------------
+                {"defmeth", new LookAhead(defmeth, "defmeth") },
+                {"defcnst", new LookAhead(defcnst, "defcnst") },
+                {"defindx", new LookAhead(defindx, "defindx") },
+                {"defstat", new LookAhead(defstat, "defstat") },
+
+				{"prop", new LookAhead(prop, "prop") },
                 {"sprop", new LookAhead(sprop, "sprop") },
-                {"call", new Compilable(call) },
-                {"scall", new Compilable(scall) },
                 {"isnull", new Primitive(isnull, "isnull") },
                 {"null", new Primitive(pushNull, "null") },
+                // Create a .net string and leave it's token on the stack
+                {"n\"", new Compilable(netString) },
+                // Create a type from the name and leave it's token on the stack
+                {"t\"", new Compilable(netType) },
 			};
 
             Vocabulary.AddVocabulary(new Vocabulary(rootPrimitives, "Root"));
         }
 		#endregion
 
-		//#region .NET Interaction
+		#region .NET Interaction
+        private static void defmeth(Tokenizer tokenizer)
+        {
+			// ptype0 ptype1 ... cParms objType "dnName fName" => new method primitive named "fName"
+            // where dnName is the actual name of the .NET function and fName is the name we use in
+            // Forth.  This is necessary due to .NET's overloading.  Each overload requires a different
+            // name in Forth.
+			CallAction.CreateMethod(tokenizer);
+        }
+
+        private static void defstat(Tokenizer tokenizer)
+        {
+			// ptype0 ptype1 ... cParms staticType "dnName fName" => new method primitive named "fName"
+			CallAction.CreateStaticMethod(tokenizer);
+        }
+
+		private static void defcnst(Tokenizer tokenizer)
+        {
+			// ptype0 ptype1 ... cParms type "fName" => new method primitive named "fName"
+			CallAction.CreateConstructor(tokenizer);
+        }
+
+		private static void defindx(Tokenizer tokenizer)
+        {
+			// ptype0 ptype1 ... cParms type "fName" => new method primitive named "fName"
+            CallAction.CreateIndexer(tokenizer);
+        }
+
 		private static void propHelper(Tokenizer tokenizer, bool isStatic = false)
 		{
 			var word = tokenizer.NextToken();
-            var obj = GetObject(Stack.Pop());
+            var obj = GetManagedObject(Stack.Pop());
             var property = isStatic ? ((Type)obj).GetProperty(word) : obj.GetType().GetProperty(word);
             if (property == null)
             {
@@ -149,7 +200,7 @@ namespace NetForth
 
         private static void prop(Tokenizer tokenizer)
         {
-            propHelper(tokenizer, false);
+            propHelper(tokenizer);
         }
 
         private static void sprop(Tokenizer tokenizer)
@@ -166,23 +217,7 @@ namespace NetForth
         {
             Stack[-1] = Stack[-1] == -1 ? -1 : 0;
         }
-
-        // Top of stack is object acted on, rest of stack are objects, either ints or .net objects for parameters.
-        // Next word is method to call and next word is composed of the letters 'i' and 'o', one letter per
-        // parameter.  The letters work from the first argument to last and indicate whether the
-        // corresponding parameter is a normal integer (i) or a .net object (o).  If there are no parameters
-        // this string should be "none".
-        private static void call(Tokenizer tkn, WordListBuilder wlb)
-        {
-            CallAction.DoCall(tkn, wlb);
-        }
-
-        // Static calls
-        private static void scall(Tokenizer tkn, WordListBuilder wlb)
-        {
-            CallAction.DoCall(tkn, wlb, true);
-        }
-		//#endregion
+		#endregion
 
 		#region Strings
 		private static void countedString(Tokenizer tokenizer, WordListBuilder wlb)

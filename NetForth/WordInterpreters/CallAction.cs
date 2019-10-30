@@ -1,82 +1,111 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using static NetForth.Session;
 
 namespace NetForth.WordInterpreters
 {
-	static class CallAction
+    static class CallAction
 	{
-        public static void DoCall(Tokenizer tkn, WordListBuilder wlb, bool isStatic = false)
+		// ptype0 ptype1 ... cParms objType "dnName fName" => new method primitive named "fName"
+		public static void CreateMethod(Tokenizer tkn)
         {
-            var fname = tkn.NextToken();
-            var parmsInfo = tkn.NextToken().ToLower();
-            if (parmsInfo == "noprms")
+            var dnName = tkn.NextToken();
+            var fName = tkn.NextToken();
+            var objType = PopType($"Bad object type in definition of {fName}");
+            var parmTypes = GetParmTypes($"Bad parameter type in definition of {fName}");
+
+			var method = objType.GetMethod(dnName, BindingFlags.Public | BindingFlags.Instance,
+                null, parmTypes, null);
+            Vocabulary.CurrentVocabulary.AddDefinition(fName, new MethodPrimitive(method, parmTypes));
+		}
+
+		// ptype0 ptype1 ... cParms staticType "dnName fName" => new method primitive named "fName"
+		public static void CreateStaticMethod(Tokenizer tkn)
+        {
+            var dnName = tkn.NextToken();
+            var fName = tkn.NextToken();
+            var staticType = PopType($"Bad static type in definition of {fName}");
+            var parmTypes = GetParmTypes($"Bad parameter type in definition of {fName}");
+            var method = staticType.GetMethod(dnName, BindingFlags.Public |  BindingFlags.Static,
+                null, parmTypes, null);
+ 
+           Vocabulary.CurrentVocabulary.AddDefinition(fName, new MethodPrimitive(method, parmTypes, true));
+        }
+
+        // ptype0 ptype1 ... cParms type "fName" => new method primitive named "fName"
+        public static void CreateConstructor(Tokenizer tkn)
+        {
+            var fName = tkn.NextToken();
+            var type = PopType($"Bad type in definition of constructor {fName}");
+            var parmTypes = GetParmTypes($"Bad parameter type in definition of constructor {fName}");
+			var ctor = type.GetConstructor(parmTypes);
+
+			Vocabulary.CurrentVocabulary.AddDefinition(fName, new ConstructorPrimitive(ctor, parmTypes));
+        }
+
+        // ptype0 ptype1 ... cParms type "fName" => new method primitive named "fName"
+		public static void CreateIndexer(Tokenizer tkn)
+        {
+            var fName = tkn.NextToken();
+            var type = PopType($"Bad type in definition of indexer {fName}");
+            var parmTypes = GetParmTypes($"Bad parameter type in definition of indexer {fName}");
+
+            Vocabulary.CurrentVocabulary.AddDefinition(fName, new IndexerPrimitive(type, parmTypes));
+        }
+
+		private static Type[] GetParmTypes(string errorMessage)
+        {
+            var cParms = Stack.Pop();
+
+            var parmTypes = new Type[cParms];
+
+            for (var iParm = cParms - 1; iParm >= 0; iParm--)
             {
-                parmsInfo = string.Empty;
+                parmTypes[iParm] = PopType(errorMessage);
             }
-            var objIndex = Stack.Pop();
-            var obj = GetObject(objIndex);
-            var parms = new object[parmsInfo.Length];
 
-            for (var iParm = parmsInfo.Length - 1; iParm >= 0; iParm--)
+            return parmTypes;
+        }
+
+        private static Type PopType(string errorMessage)
+        {
+            var typeIndex = Stack.Pop();
+            Type retType;
+
+            if (typeIndex == -1)
             {
-                var val = Stack.Pop();
-                switch (parmsInfo[iParm])
+                retType = null;
+            }
+            else
+            {
+                retType = GetManagedObject(typeIndex) as Type;
+                if (retType == null)
                 {
-					case 'i':
-                        parms[iParm] = val;
-                        break;
-
-					case 'o':
-                        parms[iParm] = GetObject(val);
-                        break;
-
-					default:
-                        throw new NfException($"Invalid type in parmsInfo for call: {parmsInfo}");
+                    throw new NfException(errorMessage);
                 }
             }
 
-            var parmTypes = parms.Select(o => o.GetType()).ToArray();
-            MethodInfo method = null;
-            if (!isStatic)
-            {
-                method = obj.GetType().GetMethod(fname, BindingFlags.Public | BindingFlags.Instance,
-                    null, parmTypes, null);
-			}
-            else
-            {
-				// obj is our type
-                method = ((Type) obj).GetMethod(fname, BindingFlags.Public | BindingFlags.Static,
-                    null, parmTypes, null);
-            }
-
-			if (wlb == null)
-            {
-                var ret = method.Invoke(obj, parms);
-                HandleResult(ret);
-            }
-            else
-            {
-                wlb.Add(new DotNetPrimitive(method));
-            }
-        }
-
-        internal static void HandleResult(object result)
-        {
-            HandleResult(result.GetType(), result);
+            return retType;
         }
 
         internal static void HandleResult(Type tRet, object result)
         {
-            if (tRet == typeof(int))
+            switch (result)
             {
-                Stack.Push((int)result);
+				case char c:
+                    Stack.Push(c);
+                    return;
+
+				case short s:
+                    Stack.Push(s);
+                    return;
+
+				case int i:
+                    Stack.Push(i);
+                    return;
             }
-            else if (tRet != typeof(void))
+
+            if (tRet != typeof(void))
             {
                 Stack.Push(SaveManagedObject(result));
             }
