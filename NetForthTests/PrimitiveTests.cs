@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetForth;
 using FluentAssertions;
+using NetForth.Primitives;
 using static NetForth.Session;
 
 namespace NetForthTests

@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetForth;
 using FluentAssertions;
 using static NetForth.Session;
@@ -28,8 +25,8 @@ namespace NetForthTests
         [TestMethod]
         public void KeyTests()
         {
-            TestScript("key", (int) 'a');
-            TestScript("key", (int)'b');
+            TestScript("key", 'a');
+            TestScript("key", 'b');
         }
 
         private void TestScript(string script, int expected)

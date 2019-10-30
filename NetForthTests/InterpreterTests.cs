@@ -53,8 +53,7 @@ dup ( This is
 
         private void NewTestScript(string script, int expected)
         {
-            var intrp = new Interpreter();
-            intrp.Interpret(script);
+            _intrp.Interpret(script);
             Stack.Should().HaveCount(1);
             Stack[0].Should().Be(expected);
             Stack.Clear();
@@ -63,8 +62,7 @@ dup ( This is
         [TestMethod]
         public void TestUndefinedWord()
         {
-            var intrp = new Interpreter();
-            Action act = () => intrp.Interpret("doggy");
+            Action act = () => _intrp.Interpret("doggy");
             act
                 .Should().Throw<NfException>()
                 .WithMessage("Couldn't locate word doggy");
@@ -73,8 +71,7 @@ dup ( This is
         [TestMethod]
         public void TestStackUnderflow()
         {
-            var intrp = new Interpreter();
-            Action act = () => intrp.Interpret("*");
+            Action act = () => _intrp.Interpret("*");
             act
                 .Should().Throw<NfException>()
                 .WithMessage("Stack underflow");

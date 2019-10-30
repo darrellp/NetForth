@@ -45,13 +45,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Primitives\DotNetPrimitive.cs" />
     <Compile Include="Evaluable.cs" />
     <Compile Include="ForthStack.cs" />
     <Compile Include="Interpreter.cs" />
-    <Compile Include="IntPrim.cs" />
+    <Compile Include="Primitives\IntPrim.cs" />
     <Compile Include="Memory.cs" />
+    <Compile Include="Primitives\Compilable.cs" />
+    <Compile Include="Primitives\ConstructorPrimitive.cs" />
+    <Compile Include="Primitives\DotNetDelegatePrimitive.cs" />
+    <Compile Include="Primitives\IndexerPrimitive.cs" />
+    <Compile Include="Primitives\LookAhead.cs" />
+    <Compile Include="Primitives\MethodPrimitive.cs" />
     <Compile Include="NfException.cs" />
-    <Compile Include="Primitive.cs" />
+    <Compile Include="Primitives\Primitive.cs" />
+    <Compile Include="Primitives\ThrowPrimitive.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RootPrims.cs" />
     <Compile Include="Session.cs" />

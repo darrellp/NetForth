@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using NetForth.Primitives;
 using static NetForth.Session;
 
 namespace NetForth

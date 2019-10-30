@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using NetForth.Primitives;
 
 namespace NetForth
 {
@@ -61,7 +62,7 @@ namespace NetForth
 		#region .NET interaction
         public static void AddDotNetFn(string name, Delegate myDelegate)
         {
-            Vocabulary.CurrentVocabulary.AddDefinition(name, new DotNetPrimitive(myDelegate));
+            Vocabulary.CurrentVocabulary.AddDefinition(name, new DotNetDelegatePrimitive(myDelegate));
         }
 
         public static int SaveManagedObject(Object obj)

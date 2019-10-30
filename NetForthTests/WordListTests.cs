@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentAssertions;
 using NetForth;
+using NetForth.Primitives;
 
 namespace NetForthTests
 {

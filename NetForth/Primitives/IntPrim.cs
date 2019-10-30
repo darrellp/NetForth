@@ -1,6 +1,6 @@
 ﻿using static NetForth.Session;
 
-namespace NetForth
+namespace NetForth.Primitives
 {
     internal class IntPrim : Evaluable
     {

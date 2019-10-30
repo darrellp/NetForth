@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using NetForth.Primitives;
 using static NetForth.Session;
 
 namespace NetForth.WordInterpreters
