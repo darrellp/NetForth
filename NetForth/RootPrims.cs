@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using NetForth.Primitives;
 using NetForth.WordInterpreters;
 using static NetForth.Evaluable;
@@ -124,6 +125,7 @@ namespace NetForth
                 {"page", new Primitive(page, "page") },
                 {"type", new Primitive(type, "type") },
                 {"key", new Primitive(key, "key") },
+                {"included", new Primitive(included, "included") },
                 // .NET -----------------------------------------------------------------
                 {"defmeth", new LookAhead(defmeth, "defmeth") },
                 {"defcnst", new LookAhead(defcnst, "defcnst") },
@@ -823,6 +825,18 @@ namespace NetForth
         private static void page()
         {
             Console.Write(StringPage);
+        }
+
+        private static void included()
+        {
+            var file = Memory.FetchSString();
+            var stream = File.OpenText(file);
+            if (stream == null)
+            {
+                throw new NfException($"Couldn't open {file}");
+            }
+            (new Interpreter()).Interpret(stream, false);
+            stream.Close();
         }
 
         private static void type()

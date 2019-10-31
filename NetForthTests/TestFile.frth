@@ -1,0 +1,2 @@
+﻿\ This is a comment
+: fsq ( a -- a^2 ) dup * ;

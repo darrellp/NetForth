@@ -25,18 +25,20 @@ namespace NetForthTests
         [TestMethod]
         public void TestDefinition()
         {
-            var intPrim10 = new IntPrim(10);
-            var intPrim20 = new IntPrim(20);
-            var plus = Vocabulary.Lookup("+");
-            var dup = Vocabulary.Lookup("Dup");
-            plus.Should().NotBeNull();
-            dup.Should().NotBeNull();
-            // Should be 20 + 2 * 10 = 40.
-            var def = new WordList("", intPrim20, intPrim10, dup, plus, plus);
-            def.Eval();
-            var val = Session.Stack.Pop();
-            Session.Stack.Should().BeEmpty();
-            val.Should().Be(40, "because 20 + 2 * 10 = 40");
-        }
+            using(var nf = new Session())
+            {
+                var intPrim10 = new IntPrim(10);
+                var intPrim20 = new IntPrim(20);
+                var plus = Vocabulary.Lookup("+");
+                var dup = Vocabulary.Lookup("Dup");
+                plus.Should().NotBeNull();
+                dup.Should().NotBeNull();
+                // Should be 20 + 2 * 10 = 40.
+                var def = new WordList("", intPrim20, intPrim10, dup, plus, plus);
+                def.Eval();
+                var val = Session.Stack.Pop();
+                Session.Stack.Should().BeEmpty();
+                val.Should().Be(40, "because 20 + 2 * 10 = 40");
+            }        }
 	}
 }

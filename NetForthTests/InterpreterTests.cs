@@ -28,7 +28,13 @@ namespace NetForthTests
         [TestMethod]
         public void TestInterpret()
         {
-            NewTestScript("20 10 dup + +", 40);
+            TestScript("20 10 dup + +", 40);
+        }
+
+        [TestMethod]
+        public void TestIncluded()
+        {
+            _intrp.Interpret("S\" testfile.frth\" included 10 fsq");
         }
 
         [TestMethod]
@@ -41,17 +47,17 @@ namespace NetForthTests
 dup ( This is
       a multiline comment ) +
 +";
-                NewTestScript(code, 40);
+                TestScript(code, 40);
             }
         }
 
         [TestMethod]
         public void TestDefine()
         {
-            NewTestScript(": square ( n -- n^2 ) dup * ; 3 square", 9);
+            TestScript(": square ( n -- n^2 ) dup * ; 3 square", 9);
         }
 
-        private void NewTestScript(string script, int expected)
+        private void TestScript(string script, int expected)
         {
             _intrp.Interpret(script);
             Stack.Should().HaveCount(1);

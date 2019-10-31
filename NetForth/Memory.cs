@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -102,6 +103,14 @@ namespace NetForth
             }
 
             return FetchString(address + Session.StringLengthSize, length);
+        }
+
+        internal static string FetchSString()
+        {
+            var length = Session.Stack.Pop();
+            var address = Session.Stack.Pop();
+
+            return FetchString(address, length);
         }
 
 		internal static string FetchString(int address, int length)
