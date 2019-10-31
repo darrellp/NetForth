@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace NetForth
@@ -85,12 +86,30 @@ namespace NetForth
             *(ushort*)address = value;
         }
 
+        internal static string FetchCString(int address)
+        {
+            var length = 0;
+
+            switch (Session.StringLengthSize)
+            {
+                case 1:
+                    length = FetchByte(address);
+                    break;
+
+                case sizeof(int):
+                    length = FetchInt(address);
+                    break;
+            }
+
+            return FetchString(address + Session.StringLengthSize, length);
+        }
+
 		internal static string FetchString(int address, int length)
 		{
 			CheckBlock((IntPtr)address, length);
-			char[] charArray = new char[length];
+			var charArray = new char[length];
 			var pch = (char*)address;
-			for (int i = 0; i < length; i++)
+			for (var i = 0; i < length; i++)
 			{
 				charArray[i] = *pch++;
 			}
@@ -123,13 +142,15 @@ namespace NetForth
             }
 			StoreString(address + Session.StringLengthSize, value);
 		}
+
 		[Conditional("MEMORYCHECK")]
         private static void  CheckAddress(IntPtr ptr)
         {
             var iPtr = (int) ptr;
+            var iPtrStack = (int) Session.StackStringMemory;
             var iMemory = (int) Session.ForthMemory;
 
-            if (iPtr < iMemory || iPtr >= iMemory + Session.CbMemory)
+            if ((iPtr < iPtrStack || iPtr >= iPtrStack + Session.StackStringMemoryCapacity) && (iPtr < iMemory || iPtr >= iMemory + Session.CbMemory))
             {
                 throw new NfException("Invalid memory access");
             }
@@ -139,7 +160,7 @@ namespace NetForth
         private static void CheckBlock(IntPtr ptr, int cb = 4)
         {
             CheckAddress(ptr);
-            CheckAddress(ptr + cb);
+            CheckAddress(ptr + cb - 1);
         }
 
         static readonly UnicodeEncoding unicode = new UnicodeEncoding();
@@ -148,5 +169,21 @@ namespace NetForth
             return unicode.GetString((byte*) p, cch * 2);
         }
 		#endregion
-	}
+
+        public static int AllocateStackString(int stringLengthSize)
+        {
+            if (Session.StackStringMemoryCapacity < stringLengthSize)
+            {
+                if (Session.StackStringMemory != null)
+                {
+                    Marshal.FreeHGlobal(Session.StackStringMemory);
+                }
+
+                Session.StackStringMemoryCapacity = stringLengthSize;
+                Session.StackStringMemory = Marshal.AllocHGlobal(stringLengthSize);
+            }
+
+            return (int)Session.StackStringMemory;
+        }
+    }
 }

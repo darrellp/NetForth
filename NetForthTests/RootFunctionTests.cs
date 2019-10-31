@@ -101,6 +101,12 @@ namespace NetForthTests
 		}
 
         [TestMethod]
+        public void TestStackString()
+        {
+            TestScript($": dotest S\" Hello World!\" ; dotest swap b@ +", 12 + 'H');
+        }
+
+        [TestMethod]
         public void TestCharWord()
         {
             TestScript(": dotest [char] a ; dotest", 'a');

@@ -12,6 +12,8 @@ namespace NetForth
         public static readonly ForthStack<int> ReturnStack = new ForthStack<int>();
 		public static readonly ForthStack<int> Stack = new ForthStack<int>();
         public static IntPtr ForthMemory;
+        public static IntPtr StackStringMemory;
+        public static int StackStringMemoryCapacity;
         public static int FreeOffset;
         public static readonly List<Evaluable> EvaluableVals = new List<Evaluable>();
         public static readonly List<object> DotNetObjects = new List<object>();
@@ -34,7 +36,9 @@ namespace NetForth
             CbMemory = cbMemory;
             ForthMemory = Marshal.AllocHGlobal(CbMemory);
             FreeOffset = 0;
-            Vocabulary.Init();
+            StackStringMemoryCapacity = 0;
+
+			Vocabulary.Init();
 
 			ReturnStack.Clear();
             EvaluableVals.Clear();

@@ -9,7 +9,8 @@ namespace NetForth.WordInterpreters
     {
         Forth,
         DotNet,
-        Type
+        Type,
+        Stack
     }
 	static class FStringAction
 	{
@@ -62,14 +63,28 @@ namespace NetForth.WordInterpreters
                     }
 					finalValue = SaveManagedObject(Type.GetType(text));
 					break;
+
+				case StringType.Stack:
+                    var pStackString = Memory.AllocateStackString(text.Length);
+                    Memory.StoreString(pStackString, text);
+                    finalValue = pStackString;
+                    break;
 			}
-            if (wlbParent == null)
+			if (wlbParent == null)
             {
                 Stack.Push(finalValue);
+                if (st == StringType.Stack)
+                {
+                    Stack.Push(text.Length);
+                }
             }
             else
             {
                 wlbParent.Add(new IntPrim(finalValue));
+                if (st == StringType.Stack)
+                {
+                    wlbParent.Add(new IntPrim(text.Length));
+                }
             }
 		}
 	}

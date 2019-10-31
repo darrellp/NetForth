@@ -15,14 +15,7 @@ namespace NetForth
 		#region Setting up root vocabulary
 		internal static void AddRoot()
         {
-            // Defining some standard .NET types
-            Vocabulary.CurrentVocabulary.AddDefinition("tstring", new IntPrim(SaveManagedObject(typeof(string)), "tstring"));
-            Vocabulary.CurrentVocabulary.AddDefinition("tbyte", new IntPrim(SaveManagedObject(typeof(byte)), "tbyte"));
-            Vocabulary.CurrentVocabulary.AddDefinition("tshort", new IntPrim(SaveManagedObject(typeof(short)), "tshort"));
-            Vocabulary.CurrentVocabulary.AddDefinition("tint", new IntPrim(SaveManagedObject(typeof(int)), "tint"));
-            Vocabulary.CurrentVocabulary.AddDefinition("tlong", new IntPrim(SaveManagedObject(typeof(long)), "long"));
-
-			var rootPrimitives = new Dictionary<string, Evaluable>()
+            var rootPrimitives = new Dictionary<string, Evaluable>()
             {
                 // MATH --------------------------------------------------------
                 {"+", new Primitive(plus, "+")},
@@ -104,10 +97,12 @@ namespace NetForth
                 {"exit", new ThrowPrimitive(exit, "exit") },
                 // STRINGS -------------------------------------------------------------
 				{"c\"", new Compilable(countedString) },
+                {"s\"", new Compilable(stackString) },
                 {"[char]", new LookAhead(fromChar, "[char]", true) },
                 {"char", new LookAhead(fromChar, "char") },
                 {"strhead", new Primitive(strhead, "strhead") },
                 {"count", new Primitive(count, "count") },
+                {"cstrTo.Net", new Primitive(cstrToDNet, "cstrTo.Net") },
                 // MEMORY ALLOTMENT -----------------------------------------------------
                 {"create", new LookAhead(create, "create") },
                 {",", new Primitive(comma, ",") },
@@ -146,8 +141,19 @@ namespace NetForth
 			};
 
             Vocabulary.AddVocabulary(new Vocabulary(rootPrimitives, "Root"));
+            DefineNetTypes();
         }
-		#endregion
+
+        private static void DefineNetTypes()
+        {
+            // Defining some standard .NET types
+            Vocabulary.CurrentVocabulary.AddDefinition("tstring", new IntPrim(SaveManagedObject(typeof(string)), "tstring"));
+            Vocabulary.CurrentVocabulary.AddDefinition("tbyte", new IntPrim(SaveManagedObject(typeof(byte)), "tbyte"));
+            Vocabulary.CurrentVocabulary.AddDefinition("tshort", new IntPrim(SaveManagedObject(typeof(short)), "tshort"));
+            Vocabulary.CurrentVocabulary.AddDefinition("tint", new IntPrim(SaveManagedObject(typeof(int)), "tint"));
+            Vocabulary.CurrentVocabulary.AddDefinition("tlong", new IntPrim(SaveManagedObject(typeof(long)), "long"));
+        }
+        #endregion
 
 		#region .NET Interaction
         private static void defmeth(Tokenizer tokenizer)
@@ -220,10 +226,21 @@ namespace NetForth
 		#endregion
 
 		#region Strings
+        // Counted String To .NET
+        private static void cstrToDNet()
+        {
+            Stack[-1] = SaveManagedObject(Memory.FetchCString(Stack[-1]));
+        }
+
 		private static void countedString(Tokenizer tokenizer, WordListBuilder wlb)
 		{
 			FStringAction.FString(tokenizer, wlb);
 		}
+
+        private static void stackString(Tokenizer tokenizer, WordListBuilder wlb)
+        {
+            FStringAction.FString(tokenizer, wlb, StringType.Stack);
+        }
 
         private static void netString(Tokenizer tokenizer, WordListBuilder wlb)
         {
