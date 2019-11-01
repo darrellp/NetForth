@@ -103,7 +103,7 @@ namespace NetForthTests
         [TestMethod]
         public void TestStackString()
         {
-            TestScript($": dotest S\" Hello World!\" ; dotest swap b@ +", 12 + 'H');
+            TestScript($": dotest S\" Hello World!\" ; dotest swap 1 chars + c@ +", 12 + 'e');
         }
 
         [TestMethod]

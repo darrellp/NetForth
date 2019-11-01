@@ -159,7 +159,7 @@ namespace NetForth
             var iPtrStack = (int) Session.StackStringMemory;
             var iMemory = (int) Session.ForthMemory;
 
-            if ((iPtr < iPtrStack || iPtr >= iPtrStack + Session.StackStringMemoryCapacity) && (iPtr < iMemory || iPtr >= iMemory + Session.CbMemory))
+            if ((iPtr < iPtrStack || iPtr >= iPtrStack + Session.StackStringMemoryCapacity * sizeof(char)) && (iPtr < iMemory || iPtr >= iMemory + Session.CbMemory))
             {
                 throw new NfException("Invalid memory access");
             }
@@ -177,22 +177,22 @@ namespace NetForth
         {
             return unicode.GetString((byte*) p, cch * 2);
         }
-		#endregion
 
         public static int AllocateStackString(int stringLengthSize)
         {
             if (Session.StackStringMemoryCapacity < stringLengthSize)
             {
-                if (Session.StackStringMemory != null)
+                if (Session.StackStringMemory != (IntPtr)0)
                 {
                     Marshal.FreeHGlobal(Session.StackStringMemory);
                 }
 
                 Session.StackStringMemoryCapacity = stringLengthSize;
-                Session.StackStringMemory = Marshal.AllocHGlobal(stringLengthSize);
+                Session.StackStringMemory = Marshal.AllocHGlobal(stringLengthSize * sizeof(char));
             }
 
             return (int)Session.StackStringMemory;
+		#endregion
         }
     }
 }

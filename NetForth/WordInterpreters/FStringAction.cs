@@ -45,7 +45,7 @@ namespace NetForth.WordInterpreters
             switch (st)
             {
 				case StringType.Forth:
-                    var pCountedString = Memory.Allocate(text.Length + Session.StringLengthSize);
+                    var pCountedString = Memory.Allocate(text.Length * sizeof(char) + Session.StringLengthSize);
                     Memory.StoreCString(pCountedString, text);
                     finalValue = pCountedString;
                     break;

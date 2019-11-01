@@ -382,7 +382,7 @@ namespace NetForth
 
         private static void chars()
         {
-            Stack[-1] *= 2;
+            Stack[-1] *= sizeof(char);
         }
 
         private static void comma()
