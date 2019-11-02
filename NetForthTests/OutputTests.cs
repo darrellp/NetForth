@@ -77,7 +77,7 @@ namespace NetForthTests
         [TestMethod]
         public void TestType()
         {
-            Interpret("C\" Hello World\" count type");
+            Interpret("S\" Hello World\" type");
             _swrit.ToString().Should().Be("Hello World");
         }
 

@@ -31,6 +31,8 @@ namespace NetForth
                 {"abs", new Primitive(abs, "abs")},
                 {"min", new Primitive(min, "min")},
                 {"max", new Primitive(max, "max")},
+                {"1-", new Primitive(oneMinus, "1-") },
+                {"1+", new Primitive(onePlus, "1-") },
                 // STACK --------------------------------------------------------
                 {"dup", new Primitive(dup, "dup")},
                 {"?dup", new Primitive(qDup, "?dup")},
@@ -60,6 +62,8 @@ namespace NetForth
                 {"<>", new Primitive(neq, "<>") },
                 {"0=", new Primitive(zeq, "0=") },
                 {"0<>", new Primitive(zneq, "0<>") },
+                {"0>", new Primitive(zgt, "0>") },
+                {"0<", new Primitive(zlt, "0<") },
                 // LOGICAL OPERATIONS --------------------------------------------
                 {"and", new Primitive(and, "and") },
                 {"or", new Primitive(or, "or") },
@@ -596,6 +600,16 @@ namespace NetForth
             Stack[-1] = Stack[-1] != 0 ? -1 : 0;
         }
 
+        private static void zgt()
+        {
+            Stack[-1] = Stack[-1] > 0 ? -1 : 0;
+        }
+
+		private static void zlt()
+        {
+            Stack[-1] = Stack[-1] < 0 ? -1 : 0;
+        }
+
         private static void lt()
         {
             var n2 = Stack.Pop();
@@ -722,6 +736,16 @@ namespace NetForth
 		#endregion
 
 		#region Arithmetic
+        private static void oneMinus()
+        {
+            Stack[-1]--;
+        }
+
+        private static void onePlus()
+        {
+            Stack[-1]++;
+        }
+
         private static void min()
         {
             var v = Stack.Pop();
@@ -841,10 +865,7 @@ namespace NetForth
 
         private static void type()
         {
-            var len = Stack.Pop();
-            var address = Stack.Pop();
-            string str = Memory.BytesToString(address, len);
-			Console.Write(str);
+			Console.Write(Memory.FetchSString());
         }
 
         static string _input = "abcdefghijklmnopqrstuvwxyz\n";

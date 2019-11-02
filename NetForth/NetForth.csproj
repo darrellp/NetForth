@@ -74,10 +74,5 @@
     <Compile Include="WordList.cs" />
     <Compile Include="WordListBuilder.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="TestFile.frth">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
