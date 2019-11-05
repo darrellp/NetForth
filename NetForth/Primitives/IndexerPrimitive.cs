@@ -19,19 +19,6 @@ namespace NetForth.Primitives
                 return;
             }
 
-            // Locate the proper indexer property
-            foreach (var property in objType.GetProperties(BindingFlags.Instance | BindingFlags.Public))
-            {
-                var indexParameters = property.GetIndexParameters();
-                if (indexParameters.Length > 0)
-                {
-                    if (indexParameters.Select(ip => ip.ParameterType).Zip(parmTypes, (t1, t2) => t1 == t2).All(t => t))
-                    {
-                        _indexerProperty = property;
-                    }
-                }
-            }
-
             if (_indexerProperty == null)
             {
                 throw new NfException($"Invalid parameters to index into {objType}");
