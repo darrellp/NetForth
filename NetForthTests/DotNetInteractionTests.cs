@@ -103,9 +103,8 @@ t"" System.OutOfMemoryException"" constant tMemoryException";
             _interpreter.Interpret("tInt 1 tString defIndx strIndexer");
             _interpreter.Interpret("tInt 1 tIntArray defIndx arrIndexer");
             AddDotNetFn("arrayMaker", (Func<int, int[]>)ArrayMaker);
-            _interpreter.Interpret("10 arrayMaker constant myArray");
             TestScript("1 n\" Darrell\" strIndexer", 'a');
-            TestScript("9 myArray arrIndexer", 9);
+            TestScript("10 arrayMaker 9 swap arrIndexer", 9);
         }
 
 		private void TestThrow(string script, string msg = null)
