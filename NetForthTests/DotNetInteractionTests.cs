@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetForth;
 using FluentAssertions;
@@ -22,6 +23,7 @@ namespace NetForthTests
             // Define types we use below
             var script = @"
 t"" System.DateTime"" constant tDatetime
+t"" System.Int32[]"" constant tIntArray
 t"" NetForthTests.DotNetInteractionTests, NetForthTests, Version = 1.0.0.0, Culture = neutral, PublicKeyToken = null"" constant tTests
 t"" System.OutOfMemoryException"" constant tMemoryException";
 			_interpreter.Interpret(script);
@@ -90,11 +92,20 @@ t"" System.OutOfMemoryException"" constant tMemoryException";
             TestScript("n\" Darrell\" mExcpt prop Message prop Length", 7);
         }
 
+        static int[] ArrayMaker(int count)
+        {
+            return Enumerable.Range(0, count).ToArray();
+        }
+
         [TestMethod]
         public void TestIndexer()
         {
             _interpreter.Interpret("tInt 1 tString defIndx strIndexer");
+            _interpreter.Interpret("tInt 1 tIntArray defIndx arrIndexer");
+            AddDotNetFn("arrayMaker", (Func<int, int[]>)ArrayMaker);
+            _interpreter.Interpret("10 arrayMaker constant myArray");
             TestScript("1 n\" Darrell\" strIndexer", 'a');
+            TestScript("9 myArray arrIndexer", 9);
         }
 
 		private void TestThrow(string script, string msg = null)
