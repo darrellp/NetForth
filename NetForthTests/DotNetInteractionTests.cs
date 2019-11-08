@@ -25,7 +25,10 @@ namespace NetForthTests
 t"" System.DateTime"" constant tDatetime
 t"" System.Int32[]"" constant tIntArray
 t"" NetForthTests.DotNetInteractionTests, NetForthTests, Version = 1.0.0.0, Culture = neutral, PublicKeyToken = null"" constant tTests
-t"" System.OutOfMemoryException"" constant tMemoryException";
+t"" System.OutOfMemoryException"" constant tMemoryException
+( Generic list of ints - the generic argument of int has to be pushed on the stack before the definition )
+tInt t"" System.Collections.Generic.List`1"" constant tIntList
+";
 			_interpreter.Interpret(script);
         }
 
@@ -89,7 +92,10 @@ t"" System.OutOfMemoryException"" constant tMemoryException";
         public void TestConstructor()
         {
             _interpreter.Interpret("tString 1 tMemoryException defCnst mExcpt");
+            // Define constructor for list of ints and create a list called myList
+            _interpreter.Interpret("tInt 1 tIntList defCnst intListCnst 10 intListCnst Constant myList");
             TestScript("n\" Darrell\" mExcpt prop Message prop Length", 7);
+            TestScript("myList prop Capacity", 10);
         }
 
         static int[] ArrayMaker(int count)

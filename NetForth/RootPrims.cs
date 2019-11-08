@@ -143,6 +143,8 @@ namespace NetForth
                 // Create a .net string and leave it's token on the stack
                 {"n\"", new Compilable(netString) },
                 // Create a type from the name and leave it's token on the stack
+                // If it's a generic type then the types for it's generic arguments
+                // should be pushed on the stack ahead when the type is created.
                 {"t\"", new Compilable(netType) },
 			};
 

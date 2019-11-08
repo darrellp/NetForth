@@ -54,9 +54,12 @@ namespace NetForth.WordInterpreters
             Vocabulary.CurrentVocabulary.AddDefinition(fName, new IndexerPrimitive(type, parmTypes));
         }
 
-		private static Type[] GetParmTypes(string errorMessage)
+		internal static Type[] GetParmTypes(string errorMessage, int cParms = -1)
         {
-            var cParms = Stack.Pop();
+            if (cParms < 0)
+            {
+                cParms = Stack.Pop();
+            }
 
             var parmTypes = new Type[cParms];
 

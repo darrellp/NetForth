@@ -61,7 +61,14 @@ namespace NetForth.WordInterpreters
                     {
                         throw new NfException($"Unrecognized .NET type in t\": {text}");
                     }
-					finalValue = SaveManagedObject(Type.GetType(text));
+
+                    if (type.IsGenericType)
+                    {
+                        var genericParameterCount = type.GetGenericArguments().Length;
+                        var parmTypes = CallAction.GetParmTypes($"Invalid types for generic type {text}", genericParameterCount);
+                        type = type.MakeGenericType(parmTypes);
+                    }
+                    finalValue = SaveManagedObject(type);
 					break;
 
 				case StringType.Stack:
